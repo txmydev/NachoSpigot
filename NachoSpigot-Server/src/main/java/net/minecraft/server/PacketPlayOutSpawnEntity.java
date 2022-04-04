@@ -3,17 +3,17 @@ package net.minecraft.server;
 import java.io.IOException;
 
 public class PacketPlayOutSpawnEntity implements Packet<PacketListenerPlayOut> {
-    private int a; public int getEntityId() { return a; } public void setEntityId(int id) { this.a = id; }
-    private int b; public int getRawX() { return b; }
-    private int c; public int getRawY() { return c; }
-    private int d; public int getRawZ() { return d; }
-    private int e;
-    private int f;
-    private int g;
-    private int h;
-    private int i;
-    private int j;
-    private int k; public int getMetaData() { return this.k; } public void setMetaData(int meta) { this.k = meta; }
+    public int a; public int getEntityId() { return a; } public void setEntityId(int id) { this.a = id; }
+    public int b; public int getRawX() { return b; }
+    public int c; public int getRawY() { return c; }
+    public int d; public int getRawZ() { return d; }
+    public int e;
+    public int f;
+    public int g;
+    public int h;
+    public int i;
+    public int j;
+    public int k; public int getMetaData() { return this.k; } public void setMetaData(int meta) { this.k = meta; }
 
     public PacketPlayOutSpawnEntity() {
     }

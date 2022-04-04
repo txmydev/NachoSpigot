@@ -119,6 +119,22 @@ public class PacketDataSerializer extends ByteBuf {
         return i;
     }
 
+    public int e() {
+        int var1 = 0;
+        int var2 = 0;
+
+        byte var3;
+        do {
+            var3 = this.readByte();
+            var1 |= (var3 & 127) << var2++ * 7;
+            if (var2 > 5) {
+                throw new RuntimeException("VarInt too big");
+            }
+        } while((var3 & 128) == 128);
+
+        return var1;
+    }
+
     public long f() {
         byte b0;
         long i = 0L;
@@ -237,6 +253,22 @@ public class PacketDataSerializer extends ByteBuf {
             // CraftBukkit end
         }
         return itemstack;
+    }
+
+    public String c(int var1) {
+        int var2 = this.e();
+        if (var2 > var1 * 4) {
+            throw new DecoderException("The received encoded string buffer length is longer than maximum allowed (" + var2 + " > " + var1 * 4 + ")");
+        } else if (var2 < 0) {
+            throw new DecoderException("The received encoded string buffer length is less than zero! Weird string!");
+        } else {
+            String var3 = new String(this.readBytes(var2).array(), Charsets.UTF_8);
+            if (var3.length() > var1) {
+                throw new DecoderException("The received string length is longer than maximum allowed (" + var2 + " > " + var1 + ")");
+            } else {
+                return var3;
+            }
+        }
     }
 
     public String readUtf(int i) { // Nacho - deobfuscate

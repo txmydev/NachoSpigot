@@ -1,9 +1,9 @@
 package xyz.sculas.nacho.anticrash;
 
-import dev.cobblesword.nachospigot.protocol.PacketListener;
+import dev.cobblesword.nachospigot.protocol.PacketHandler;
 import net.minecraft.server.*;
 
-public class AntiCrash implements PacketListener {
+public class AntiCrash implements PacketHandler {
     @Override
     public boolean onReceivedPacket(PlayerConnection playerConnection, Packet packet) {
         if (packet instanceof PacketPlayInCustomPayload) {

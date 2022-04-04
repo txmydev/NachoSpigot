@@ -6,6 +6,8 @@ import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Floats;
 import dev.cobblesword.nachospigot.Nacho;
 import dev.cobblesword.nachospigot.events.PlayerIllegalBehaviourEvent;
+import dev.cobblesword.nachospigot.protocol.MovementHandler;
+import dev.cobblesword.nachospigot.protocol.PacketHandler;
 import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
@@ -274,9 +276,9 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
 
                 // Nacho start
                 if ((packetplayinflying.hasPos) && ((delta > 0.0D) && (this.checkMovement && !this.player.dead))) {
-                    for (dev.cobblesword.nachospigot.protocol.MovementListener movementListener : Nacho.get().getMovementListeners()) {
+                    for (MovementHandler movementHandler : Nacho.get().getMovementListeners()) {
                         try {
-                            movementListener.updateLocation(player, to, from, packetplayinflying);
+                            movementHandler.updateLocation(player, to, from, packetplayinflying);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -284,9 +286,9 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
                 }
 
                 if ((packetplayinflying.hasLook) && ((deltaAngle > 0.0F) && (this.checkMovement && !this.player.dead))) {
-                    for (dev.cobblesword.nachospigot.protocol.MovementListener movementListener : Nacho.get().getMovementListeners()) {
+                    for (MovementHandler movementHandler : Nacho.get().getMovementListeners()) {
                         try {
-                            movementListener.updateRotation(player, to, from, packetplayinflying);
+                            movementHandler.updateRotation(player, to, from, packetplayinflying);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -999,9 +1001,9 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
         // CraftBukkit end
 
         try {
-            for (dev.cobblesword.nachospigot.protocol.PacketListener packetListener : Nacho.get().getPacketListeners()) {
+            for (PacketHandler packetHandler : Nacho.get().getPacketListeners()) {
                 try {
-                    if (!packetListener.onSentPacket(this, packet))
+                    if (!packetHandler.onSentPacket(this, packet))
                         return;
                 } catch (Exception e) {
                     e.printStackTrace();

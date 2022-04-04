@@ -5,6 +5,7 @@ import com.velocitypowered.natives.util.Natives; // Paper
 import dev.cobblesword.nachospigot.Nacho; // Nacho
 import dev.cobblesword.nachospigot.exception.ExploitException; // Nacho
 import com.google.common.collect.Queues;
+import dev.cobblesword.nachospigot.protocol.PacketHandler;
 import io.netty.channel.*;
 import io.netty.channel.local.LocalChannel;
 import io.netty.channel.local.LocalServerChannel;
@@ -147,8 +148,8 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
         if (this.channel.isOpen()) {
             if (this.m instanceof PlayerConnection) {
                 try {
-                    for (dev.cobblesword.nachospigot.protocol.PacketListener packetListener : Nacho.get().getPacketListeners()) {
-                        if(!packetListener.onReceivedPacket((PlayerConnection) this.m, packet))
+                    for (PacketHandler packetHandler : Nacho.get().getPacketListeners()) {
+                        if(!packetHandler.onReceivedPacket((PlayerConnection) this.m, packet))
                             return;
                     }
                 } catch (Exception e) {

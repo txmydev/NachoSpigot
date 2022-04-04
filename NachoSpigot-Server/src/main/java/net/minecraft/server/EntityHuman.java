@@ -11,8 +11,10 @@ import java.util.UUID;
 // CraftBukkit start
 import dev.cobblesword.nachospigot.knockback.KnockbackConfig;
 import dev.cobblesword.nachospigot.knockback.KnockbackProfile;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.entity.CraftItem;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
@@ -22,6 +24,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.util.Vector;
+import txmy.dev.events.PlayerHealthChangeEvent;
 // CraftBukkit end
 
 public abstract class EntityHuman extends EntityLiving {
@@ -1274,6 +1277,7 @@ public abstract class EntityHuman extends EntityLiving {
 
     }
 
+
     private boolean p() {
         return this.world.getType(this.bx).getBlock() == Blocks.BED;
     }
@@ -1710,7 +1714,15 @@ public abstract class EntityHuman extends EntityLiving {
             f = 0.0F;
         }
 
+        float previous = getAbsorptionHearts(); // MineHQ
+
         this.getDataWatcher().watch(17, Float.valueOf(f));
+
+        // MineHQ start
+        if (previous != f) {
+            Bukkit.getPluginManager().callEvent(new PlayerHealthChangeEvent(((CraftPlayer) getBukkitEntity()), getHealth(), getHealth()));
+        }
+        // MineHQ end
     }
 
     public float getAbsorptionHearts() {

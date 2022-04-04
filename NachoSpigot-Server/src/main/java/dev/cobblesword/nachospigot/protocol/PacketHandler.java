@@ -3,7 +3,7 @@ package dev.cobblesword.nachospigot.protocol;
 import net.minecraft.server.Packet;
 import net.minecraft.server.PlayerConnection;
 
-public interface PacketListener {
+public interface PacketHandler {
   default boolean onReceivedPacket(PlayerConnection playerConnection, Packet<?> packet) {
     return true;
   }

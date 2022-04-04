@@ -6,16 +6,16 @@ import java.util.UUID;
 import net.minecraft.server.DataWatcher.WatchableObject;
 
 public class PacketPlayOutNamedEntitySpawn implements Packet<PacketListenerPlayOut> {
-    private int a; public int getEntityId() { return this.a; } public void setEntityId(int id) { this.a = id; }
-    private UUID b; public UUID getUUID() { return this.b; } public void setUUID(UUID uuid) { this.b = uuid; }
-    private int c; public int getRawX() { return this.c; }
-    private int d; public int getRawY() { return this.d; }
-    private int e; public int getRawZ() { return this.e; }
-    private byte f; public byte getRawPitch() { return this.f; }
-    private byte g; public byte getRawYaw() { return this.g; }
-    private int h; public int getData() { return this.h; }
-    private DataWatcher i;
-    private List<WatchableObject> j;
+    public int a; public int getEntityId() { return this.a; } public void setEntityId(int id) { this.a = id; }
+    public UUID b; public UUID getUUID() { return this.b; } public void setUUID(UUID uuid) { this.b = uuid; }
+    public int c; public int getRawX() { return this.c; }
+    public int d; public int getRawY() { return this.d; }
+    public int e; public int getRawZ() { return this.e; }
+    public byte f; public byte getRawPitch() { return this.f; }
+    public byte g; public byte getRawYaw() { return this.g; }
+    public int h; public int getData() { return this.h; }
+    public DataWatcher i;
+    public List<WatchableObject> j;
 
     public PacketPlayOutNamedEntitySpawn() {
     }

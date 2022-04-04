@@ -63,6 +63,7 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
 // PaperSpigot start
 import com.destroystokyo.paper.Title;
+import txmy.dev.events.PlayerHealthChangeEvent;
 // PaperSpigot end
 
 @DelegateDeserialization(CraftOfflinePlayer.class)
@@ -1415,8 +1416,18 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     }
 
     public void setRealHealth(double health) {
+        double previous = this.health; // MineHQ
+
         this.health = health;
+
+        // MineHQ start
+        if (previous != health) {
+            Bukkit.getPluginManager().callEvent(new PlayerHealthChangeEvent(this, previous, health));
+        }
+        // MineHQ end
     }
+
+
 
     public void updateScaledHealth() {
         AttributeMapServer attributemapserver = (AttributeMapServer) getHandle().getAttributeMap();

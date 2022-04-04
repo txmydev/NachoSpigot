@@ -11,8 +11,8 @@ import net.minecraft.server.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.WorldSettings.EnumGamemode;
 
 public class PacketPlayOutPlayerInfo implements Packet<PacketListenerPlayOut> {
-    private PacketPlayOutPlayerInfo.EnumPlayerInfoAction a;
-    private final List<PacketPlayOutPlayerInfo.PlayerInfoData> b = Lists.newArrayList();
+    public PacketPlayOutPlayerInfo.EnumPlayerInfoAction a;
+    public final List<PacketPlayOutPlayerInfo.PlayerInfoData> b = Lists.newArrayList();
 
     public PacketPlayOutPlayerInfo() {
     }

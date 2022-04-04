@@ -2,11 +2,11 @@ package dev.cobblesword.nachospigot;
 
 import dev.cobblesword.nachospigot.commands.KnockbackCommand;
 import dev.cobblesword.nachospigot.hitdetection.LagCompensator;
-import dev.cobblesword.nachospigot.protocol.MovementListener;
+import dev.cobblesword.nachospigot.protocol.MovementHandler;
 import me.elier.nachospigot.config.NachoConfig;
 import xyz.sculas.nacho.anticrash.AntiCrash;
 import xyz.sculas.nacho.async.AsyncExplosions;
-import dev.cobblesword.nachospigot.protocol.PacketListener;
+import dev.cobblesword.nachospigot.protocol.PacketHandler;
 import net.minecraft.server.MinecraftServer;
 import dev.cobblesword.nachospigot.commands.SetMaxSlotCommand;
 import dev.cobblesword.nachospigot.commands.SpawnMobCommand;
@@ -20,8 +20,8 @@ public class Nacho {
     public static final Logger LOGGER = LogManager.getLogger(Nacho.class);
     private static Nacho INSTANCE;
 
-    private final Set<PacketListener> packetListeners = Sets.newConcurrentHashSet();
-    private final Set<MovementListener> movementListeners = Sets.newConcurrentHashSet();
+    private final Set<PacketHandler> packetHandlers = Sets.newConcurrentHashSet();
+    private final Set<MovementHandler> movementHandlers = Sets.newConcurrentHashSet();
 
     private final LagCompensator lagCompensator;
 
@@ -33,7 +33,7 @@ public class Nacho {
         lagCompensator = new LagCompensator();
 
         if(NachoConfig.enableAntiCrash) {
-            this.packetListeners.add(new AntiCrash());
+            this.packetHandlers.add(new AntiCrash());
         }
     }
 
@@ -50,25 +50,25 @@ public class Nacho {
         MinecraftServer.getServer().server.getCommandMap().register(knockbackCommand.getName(), "ns", knockbackCommand);
     }
 
-    public void registerPacketListener(PacketListener packetListener) {
-        this.packetListeners.add(packetListener);
+    public void registerPacketListener(PacketHandler packetHandler) {
+        this.packetHandlers.add(packetHandler);
     }
 
-    public void unregisterPacketListener(PacketListener packetListener) {
-        this.packetListeners.remove(packetListener);
+    public void unregisterPacketListener(PacketHandler packetHandler) {
+        this.packetHandlers.remove(packetHandler);
     }
 
-    public Set<PacketListener> getPacketListeners() { return packetListeners; }
+    public Set<PacketHandler> getPacketListeners() { return packetHandlers; }
 
-    public void registerMovementListener(MovementListener movementListener) {
-        this.movementListeners.add(movementListener);
+    public void registerMovementListener(MovementHandler movementHandler) {
+        this.movementHandlers.add(movementHandler);
     }
 
-    public void unregisterMovementListener(MovementListener movementListener) {
-        this.movementListeners.remove(movementListener);
+    public void unregisterMovementListener(MovementHandler movementHandler) {
+        this.movementHandlers.remove(movementHandler);
     }
 
-    public Set<MovementListener> getMovementListeners() { return movementListeners; }
+    public Set<MovementHandler> getMovementListeners() { return movementHandlers; }
 
     public LagCompensator getLagCompensator() {
         return lagCompensator;
