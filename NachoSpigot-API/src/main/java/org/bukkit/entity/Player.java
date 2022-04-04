@@ -1461,4 +1461,6 @@ public interface Player extends HumanEntity, Conversable, CommandSender, Offline
     Unsafe unsafe();
 
     double getBlockReach();
+
+    int getPing();
 }

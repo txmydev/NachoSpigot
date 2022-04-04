@@ -40,7 +40,7 @@ public class ChunkProviderGenerate implements IChunkProvider {
         this.u = new WorldGenCaves();
         this.v = new WorldGenStronghold();
         this.w = new WorldGenVillage();
-        this.x = new WorldGenMineshaft();
+        this.x = new WorldGenMineshaft(world.generatorConfig.mineshaftMultiplier);
         this.y = new WorldGenLargeFeature();
         this.z = new WorldGenCanyon();
         this.A = new WorldGenMonument();
@@ -156,7 +156,7 @@ public class ChunkProviderGenerate implements IChunkProvider {
         this.a(i, j, chunksnapshot);
         this.B = this.m.getWorldChunkManager().getBiomeBlock(this.B, i * 16, j * 16, 16, 16);
         this.a(i, j, chunksnapshot, this.B);
-        if (this.r.r && this.m.paperSpigotConfig.generateCaves) { // PaperSpigot
+        if (this.r.r && this.m.paperSpigotConfig.generateCaves && this.m.generatorConfig.cavesMultiplier > 0) { // PaperSpigot
             this.u.a(this, this.m, i, j, chunksnapshot);
         }
 

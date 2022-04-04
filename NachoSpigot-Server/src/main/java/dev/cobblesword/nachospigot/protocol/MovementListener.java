@@ -5,10 +5,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public interface MovementListener {
-  default boolean updateLocation(Player paramPlayer, Location paramLocation1, Location paramLocation2, PacketPlayInFlying paramPacketPlayInFlying) {
+  default boolean updateLocation(Player player, Location to, Location from, PacketPlayInFlying packet) {
     return true;
   }
-  default boolean updateRotation(Player paramPlayer, Location paramLocation1, Location paramLocation2, PacketPlayInFlying paramPacketPlayInFlying) {
+  default boolean updateRotation(Player player, Location to, Location from, PacketPlayInFlying packet) {
     return true;
   }
 }

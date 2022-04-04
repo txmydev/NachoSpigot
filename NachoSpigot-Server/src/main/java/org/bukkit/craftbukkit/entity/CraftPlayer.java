@@ -1732,4 +1732,10 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     public double getBlockReach() {
         return getGameMode() == GameMode.CREATIVE ? 6 : 4.5;
     }
+
+    @Override
+    public int getPing() {
+        return getHandle().ping;
+    }
+
 }

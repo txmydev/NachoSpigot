@@ -243,8 +243,9 @@ public class WorldGenCaves extends WorldGenBase {
 
    @Override
    protected void a(World var1, int var2, int var3, int var4, int var5, ChunkSnapshot var6) {
-      int var7 = this.b.nextInt(this.b.nextInt(this.b.nextInt(15) + 1) + 1);
-      if (this.b.nextInt(7) != 0) {
+      int var7 = this.b.nextInt(this.b.nextInt(this.b.nextInt((int) (15 * this.c.generatorConfig.cavesMultiplier)) + 1) + 1);
+
+      if (this.b.nextFloat() > c.generatorConfig.cavesMultiplier / 7) {
          var7 = 0;
       }
 

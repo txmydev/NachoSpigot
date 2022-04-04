@@ -14,14 +14,14 @@ public class BiomeTheEndDecorator extends BiomeDecorator {
             int i = this.b.nextInt(16) + 8;
             int j = this.b.nextInt(16) + 8;
 
-            this.M.generate(this.a, this.b, this.a.r(this.c.a(i, 0, j)));
+            this.M.generate(this.world, this.b, this.world.r(this.c.a(i, 0, j)));
         }
 
         if (this.c.getX() == 0 && this.c.getZ() == 0) {
-            EntityEnderDragon entityenderdragon = new EntityEnderDragon(this.a);
+            EntityEnderDragon entityenderdragon = new EntityEnderDragon(this.world);
 
             entityenderdragon.setPositionRotation(0.0D, 128.0D, 0.0D, this.b.nextFloat() * 360.0F, 0.0F);
-            this.a.addEntity(entityenderdragon, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CHUNK_GEN); // CraftBukkit - add SpawnReason
+            this.world.addEntity(entityenderdragon, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CHUNK_GEN); // CraftBukkit - add SpawnReason
         }
 
     }

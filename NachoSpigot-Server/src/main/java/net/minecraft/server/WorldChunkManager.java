@@ -15,6 +15,7 @@ public class WorldChunkManager {
     private BiomeCache d;
     private List<BiomeBase> e;
     private String f;
+    private World world;
 
     protected WorldChunkManager() {
         this.d = new BiomeCache(this);
@@ -29,16 +30,17 @@ public class WorldChunkManager {
         this.e.add(BiomeBase.JUNGLE_HILLS);
     }
 
-    public WorldChunkManager(long var1, WorldType var3, String var4) {
+    public WorldChunkManager(long var1, WorldType var3, String var4, World world) {
         this();
+        this.world = world;
         this.f = var4;
-        GenLayer[] var5 = GenLayer.a(var1, var3, var4);
+        GenLayer[] var5 = GenLayer.a(var1, var3, var4, world);
         this.b = var5[0];
         this.c = var5[1];
     }
 
     public WorldChunkManager(World var1) {
-        this(var1.getSeed(), var1.getWorldData().getType(), var1.getWorldData().getGeneratorOptions());
+        this(var1.getSeed(), var1.getWorldData().getType(), var1.getWorldData().getGeneratorOptions(), var1);
     }
 
     public List<BiomeBase> a() {

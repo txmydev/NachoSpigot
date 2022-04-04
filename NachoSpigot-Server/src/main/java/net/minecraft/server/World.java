@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import dev.cobblesword.nachospigot.Nacho;
+import dev.cobblesword.nachospigot.generator.GeneratorConfig;
 import me.elier.nachospigot.config.NachoConfig;
 import me.elier.nachospigot.config.NachoWorldConfig;
 import me.suicidalkids.ion.movement.MovementCache;
@@ -71,6 +72,7 @@ public abstract class World implements IBlockAccess {
     public final List<EntityHuman> players = Lists.newArrayList();
     public final List<Entity> k = Lists.newArrayList();
     protected final IntHashMap<Entity> entitiesById = new IntHashMap();
+    public final GeneratorConfig generatorConfig;// MineHQ
     private long d = 16777215L;
     private int I;
     protected int m = (new Random()).nextInt();
@@ -78,6 +80,8 @@ public abstract class World implements IBlockAccess {
     protected float o;
     protected float p;
     protected float q;
+
+
     protected float r;
     private int J;
     public final Random random = new Random();
@@ -196,6 +200,8 @@ public abstract class World implements IBlockAccess {
         this.paperSpigotConfig = new PaperWorldConfig( worlddata.getName() ); // PaperSpigot
         this.tacoSpigotConfig = new net.techcable.tacospigot.TacoSpigotWorldConfig(worlddata.getName()); // TacoSpigot
         this.nachoSpigotConfig = new NachoWorldConfig(worlddata.getName()); // NachoSpigot
+        this.generatorConfig = new GeneratorConfig(worlddata.getName()); // MineHQ
+
         this.generator = gen;
         this.world = new CraftWorld((WorldServer) this, gen, env);
         this.ticksPerAnimalSpawns = this.getServer().getTicksPerAnimalSpawns(); // CraftBukkit

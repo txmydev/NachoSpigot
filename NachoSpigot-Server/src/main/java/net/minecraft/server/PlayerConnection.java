@@ -292,6 +292,7 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
                         }
                     }
                 }
+
                 // Nacho end
 
                 if ((delta > 1f / 256 || deltaAngle > 10f) && (this.checkMovement && !this.player.dead))
