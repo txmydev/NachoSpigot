@@ -125,7 +125,13 @@ public abstract class GenLayer {
     }
 
     protected int a(int var1) {
-        int var2 = (int)((this.d >> 24) % (long)var1);
+        int var2;
+        try{
+            var2 = (int)((this.d >> 24) % (long)var1);
+        }catch(ArithmeticException ex) {
+            var2 = -1;
+        }
+
         if (var2 < 0) {
             var2 += var1;
         }

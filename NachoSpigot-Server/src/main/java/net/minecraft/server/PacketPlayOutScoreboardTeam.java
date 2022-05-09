@@ -62,22 +62,22 @@ public class PacketPlayOutScoreboardTeam implements Packet<PacketListenerPlayOut
     }
 
     public void a(PacketDataSerializer var1) throws IOException {
-        this.name = var1.c(16);
+        this.name = var1.readUtf(16);
         this.action = var1.readByte();
         if (this.action == 0 || this.action == 2) {
-            this.displayName = var1.c(32);
-            this.prefix = var1.c(16);
-            this.suffix = var1.c(16);
+            this.displayName = var1.readUtf(32);
+            this.prefix = var1.readUtf(16);
+            this.suffix = var1.readUtf(16);
             this.optionData = var1.readByte();
-            this.nameTagVisibility = var1.c(32);
+            this.nameTagVisibility = var1.readUtf(32);
             this.chatFormat = var1.readByte();
         }
 
         if (this.action == 0 || this.action == 3 || this.action == 4) {
-            int var2 = var1.e();
+            int var2 = var1.readVarInt();
 
             for(int var3 = 0; var3 < var2; ++var3) {
-                this.playerNames.add(var1.c(40));
+                this.playerNames.add(var1.readUtf(40));
             }
         }
 
@@ -96,7 +96,7 @@ public class PacketPlayOutScoreboardTeam implements Packet<PacketListenerPlayOut
         }
 
         if (this.action == 0 || this.action == 3 || this.action == 4) {
-            var1.b(this.playerNames.size());
+            var1.b(this.playerNames.size()); // Nacho - deobf
             Iterator var2 = this.playerNames.iterator();
 
             while(var2.hasNext()) {

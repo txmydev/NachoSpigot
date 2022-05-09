@@ -34,14 +34,14 @@ public class PacketCompressor extends MessageToByteEncoder<ByteBuf> {
         int var4 = var2.readableBytes();
         PacketDataSerializer var5 = new PacketDataSerializer(var3);
         if (var4 < this.threshold) {
-            var5.writeVarInt(0); // Nacho - deobfuscate writeVarInt
+            var5.b(0); // Nacho - deobfuscate writeVarInt
             var5.writeBytes(var2);
         } else {
             // Paper start
             if (this.deflater != null) {
                 byte[] var6 = new byte[var4];
                 var2.readBytes(var6);
-                var5.writeVarInt(var6.length); // Nacho - deobfuscate writeVarInt
+                var5.b(var6.length); // Nacho - deobfuscate writeVarInt
                 this.deflater.setInput(var6, 0, var4);
                 this.deflater.finish();
 
@@ -54,7 +54,7 @@ public class PacketCompressor extends MessageToByteEncoder<ByteBuf> {
                 return;
             }
 
-            var5.writeVarInt(var4);
+            var5.b(var4);
             ByteBuf compatibleIn = MoreByteBufUtils.ensureCompatible(var1.alloc(), this.compressor, var2);
             try {
                 this.compressor.deflate(compatibleIn, var3);

@@ -22,7 +22,7 @@ public class PacketPlayInUseEntity implements Packet<PacketListenerPlayIn> {
     }
 
     public void b(PacketDataSerializer var1) throws IOException {
-        var1.writeVarInt(this.a); // Nacho - deobfuscate writeVarInt
+        var1.b(this.a); // Nacho - deobfuscate writeVarInt
         var1.a(this.action);
         if (this.action == PacketPlayInUseEntity.EnumEntityUseAction.INTERACT_AT) {
             var1.writeFloat((float)this.c.a);

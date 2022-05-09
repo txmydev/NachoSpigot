@@ -36,9 +36,9 @@ public class PacketPlayOutScoreboardScore implements Packet<PacketListenerPlayOu
     public void a(PacketDataSerializer var1) throws IOException {
         this.a = var1.readUtf(40);
         this.d = (PacketPlayOutScoreboardScore.EnumScoreboardAction)var1.a(PacketPlayOutScoreboardScore.EnumScoreboardAction.class);
-        this.b = var1.c(16);
+        this.b = var1.readUtf(16);
         if (this.d != PacketPlayOutScoreboardScore.EnumScoreboardAction.REMOVE) {
-            this.c = var1.e();
+            this.c = var1.readVarInt(); // NachoSpigot - deobf readVarInt
         }
 
     }

@@ -61,7 +61,7 @@ public class PacketPlayOutNamedEntitySpawn implements Packet<PacketListenerPlayO
     }
 
     public void b(PacketDataSerializer var1) throws IOException {
-        var1.writeVarInt(this.a); // Nacho - deobfuscate writeVarInt
+        var1.b(this.a); // Nacho - deobfuscate writeVarInt
         var1.a(this.b);
         var1.writeInt(this.c);
         var1.writeInt(this.d);

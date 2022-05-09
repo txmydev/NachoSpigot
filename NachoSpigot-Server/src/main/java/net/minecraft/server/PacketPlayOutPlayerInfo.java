@@ -4,11 +4,12 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.minecraft.server.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.WorldSettings.EnumGamemode;
+
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import net.minecraft.server.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.WorldSettings.EnumGamemode;
 
 public class PacketPlayOutPlayerInfo implements Packet<PacketListenerPlayOut> {
     public PacketPlayOutPlayerInfo.EnumPlayerInfoAction a;
@@ -111,7 +112,7 @@ public class PacketPlayOutPlayerInfo implements Packet<PacketListenerPlayOut> {
 
     public void b(PacketDataSerializer var1) throws IOException {
         var1.a(this.a);
-        var1.writeVarInt(this.b.size()); // Nacho - deobfuscate writeVarInt
+        var1.b(this.b.size()); // Nacho - deobfuscate writeVarInt
         Iterator var2 = this.b.iterator();
 
         while(true) {
@@ -121,7 +122,7 @@ public class PacketPlayOutPlayerInfo implements Packet<PacketListenerPlayOut> {
                 case ADD_PLAYER:
                     var1.a(var3.a().getId());
                     var1.a(var3.a().getName());
-                    var1.writeVarInt(var3.a().getProperties().size()); // Nacho - deobfuscate writeVarInt
+                    var1.b(var3.a().getProperties().size()); // Nacho - deobfuscate writeVarInt
                     Iterator var4 = var3.a().getProperties().values().iterator();
 
                     while(var4.hasNext()) {
@@ -136,8 +137,8 @@ public class PacketPlayOutPlayerInfo implements Packet<PacketListenerPlayOut> {
                         }
                     }
 
-                    var1.writeVarInt(var3.c().getId()); // Nacho - deobfuscate writeVarInt
-                    var1.writeVarInt(var3.b()); // Nacho - deobfuscate writeVarInt
+                    var1.b(var3.c().getId()); // Nacho - deobfuscate writeVarInt
+                    var1.b(var3.b()); // Nacho - deobfuscate writeVarInt
                     if (var3.d() == null) {
                         var1.writeBoolean(false);
                     } else {
@@ -147,11 +148,11 @@ public class PacketPlayOutPlayerInfo implements Packet<PacketListenerPlayOut> {
                     break;
                 case UPDATE_GAME_MODE:
                     var1.a(var3.a().getId());
-                    var1.writeVarInt(var3.c().getId()); // Nacho - deobfuscate writeVarInt
+                    var1.b(var3.c().getId()); // Nacho - deobfuscate writeVarInt
                     break;
                 case UPDATE_LATENCY:
                     var1.a(var3.a().getId());
-                    var1.writeVarInt(var3.b()); // Nacho - deobfuscate writeVarInt
+                    var1.b(var3.b()); // Nacho - deobfuscate writeVarInt
                     break;
                 case UPDATE_DISPLAY_NAME:
                     var1.a(var3.a().getId());
@@ -179,11 +180,11 @@ public class PacketPlayOutPlayerInfo implements Packet<PacketListenerPlayOut> {
         return MoreObjects.toStringHelper(this).add("action", this.a).add("entries", this.b).toString();
     }
 
-    public class PlayerInfoData {
-        private final int b;
-        private final EnumGamemode c;
-        private final GameProfile d;
-        private final IChatBaseComponent e;
+    public static class PlayerInfoData {
+        public int b;
+        public  EnumGamemode c;
+        public GameProfile d;
+        public  IChatBaseComponent e;
 
         public PlayerInfoData(GameProfile var2, int var3, EnumGamemode var4, IChatBaseComponent var5) {
             this.d = var2;

@@ -11,6 +11,8 @@ import java.util.UUID;
 // CraftBukkit start
 import dev.cobblesword.nachospigot.knockback.KnockbackConfig;
 import dev.cobblesword.nachospigot.knockback.KnockbackProfile;
+import dev.cobblesword.nachospigot.slknockback.KnockbackModule;
+import dev.cobblesword.nachospigot.slknockback.SLKnockbackProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.entity.CraftItem;
@@ -71,6 +73,7 @@ public abstract class EntityHuman extends EntityLiving {
     public boolean fauxSleeping;
     public String spawnWorld = "";
     public int oldLevel = -1;
+    private boolean shouldDealSprintKnockback;
 
     @Override
     public CraftHumanEntity getBukkitEntity() {
@@ -1013,7 +1016,7 @@ public abstract class EntityHuman extends EntityLiving {
                     boolean flag2 = entity.damageEntity(DamageSource.playerAttack(this), f);
 
                     if (flag2) {
-                        if (i > 0) {
+                        /*if (i > 0) {
                             KnockbackProfile profile = (entity.getKnockbackProfile() == null) ?
                                     KnockbackConfig.getCurrentKb() : entity.getKnockbackProfile();
                             entity.g(
@@ -1042,7 +1045,95 @@ public abstract class EntityHuman extends EntityLiving {
                                 entity.motZ = d2;
                             }
                             // CraftBukkit end
+                        }*/
+
+                        if (entity instanceof EntityPlayer && entity.velocityChanged) {
+                            // bSpigot - Second Life Knockback Start
+                            try {
+                                EntityPlayer victim = (EntityPlayer)entity;
+                                SLKnockbackProfile knockback = KnockbackModule.getDefault();
+                                double velX = 0.0D, velY = 0.0D, velZ = 0.0D;
+                                if (knockback.onePointOneKnockback.value) {
+                                    Vector v = (new Vector(entity.locX - this.locX, 0.0D, entity.locZ - this.locZ)).normalize();
+                                    velX = v.getX();
+                                    velY = knockback.vertical.value.doubleValue();
+                                    velZ = v.getZ();
+                                    double yOff = entity.locY - this.locY;
+                                    velX *= knockback.horizontal.value;
+                                    velZ *= knockback.horizontal.value;
+                                    if (this.shouldDealSprintKnockback) {
+                                        velX *= knockback.sprintH.value.doubleValue();
+                                        velY *= knockback.sprintV.value.doubleValue();
+                                        velZ *= knockback.sprintH.value.doubleValue();
+                                    }
+                                    if (isSprinting()) {
+                                        this.motX *= knockback.slowdown.value.doubleValue();
+                                        this.motZ *= knockback.slowdown.value.doubleValue();
+                                        this.shouldDealSprintKnockback = false;
+                                        if (knockback.stopSprint.value.booleanValue())
+                                            setSprinting(false);
+                                    }
+                                } else {
+                                    if (knockback.inheritH.value.booleanValue()) {
+                                        double entityVelX = victim.motX * knockback.frictionH.value.doubleValue();
+                                        double entityVelZ = victim.motZ * knockback.frictionH.value.doubleValue();
+                                        velX = entityVelX + Math.sin(Math.toRadians(this.yaw)) * -1.0D;
+                                        velZ = entityVelZ + Math.cos(Math.toRadians(this.yaw));
+                                    } else {
+                                        velX = Math.sin(Math.toRadians(getHeadRotation())) * -1.0D;
+                                        velZ = Math.cos(Math.toRadians(getHeadRotation()));
+                                    }
+                                    velX *= knockback.horizontal.value.doubleValue();
+                                    velZ *= knockback.horizontal.value.doubleValue();
+                                    if (knockback.inheritV.value.booleanValue()) {
+                                        double entityVelY = victim.motY * knockback.frictionV.value.doubleValue();
+                                        velY = entityVelY + knockback.vertical.value.doubleValue();
+                                    } else {
+                                        velY = knockback.vertical.value.doubleValue();
+                                    }
+                                    if (victim.onGround) {
+                                        velX *= knockback.groundH.value.doubleValue();
+                                        velY *= knockback.groundV.value.doubleValue();
+                                        velZ *= knockback.groundH.value.doubleValue();
+                                    }
+                                    int enchLvl = EnchantmentManager.getEnchantmentLevel(Enchantment.KNOCKBACK.id, this.inventory.getItemInHand()) + 1;
+                                    if (enchLvl > 0) {
+                                        velX *= enchLvl;
+                                        velZ *= enchLvl;
+                                    }
+                                    if (this.shouldDealSprintKnockback) {
+                                        velX *= knockback.sprintH.value.doubleValue();
+                                        velY *= knockback.sprintV.value.doubleValue();
+                                        velZ *= knockback.sprintH.value.doubleValue();
+                                        this.shouldDealSprintKnockback = false;
+                                    }
+                                    if (isSprinting()) {
+                                        this.motX *= knockback.slowdown.value.doubleValue();
+                                        this.motZ *= knockback.slowdown.value.doubleValue();
+                                        this.shouldDealSprintKnockback = false;
+                                        if (knockback.stopSprint.value.booleanValue())
+                                            setSprinting(false);
+                                    }
+                                    double yOff = entity.locY - this.locY;
+                                    if (knockback.limitVertical.value &&
+                                            yOff > knockback.ylimit.value.doubleValue())
+                                        velY = 0.0D;
+                                }
+                                PlayerVelocityEvent event = new PlayerVelocityEvent(victim.getBukkitEntity(), new Vector(velX, velY, velZ));
+                                Bukkit.getPluginManager().callEvent(event);
+                                if (!event.isCancelled())
+                                    victim.playerConnection.sendPacket(new PacketPlayOutEntityVelocity(victim.getId(), velX, velY, velZ));
+                                victim.velocityChanged = false;
+                                victim.motX = velX;
+                                victim.motY = velY;
+                                victim.motZ = velZ;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            // bSpigot - Second Life Knockback End
                         }
+                        // Kohi end
 
                         if (flag) {
                             this.b(entity);

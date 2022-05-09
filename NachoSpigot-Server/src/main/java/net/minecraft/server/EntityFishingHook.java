@@ -201,6 +201,8 @@ public class EntityFishingHook extends Entity {
                 if (movingobjectposition.entity != null) {
                     if (movingobjectposition.entity.damageEntity(DamageSource.projectile(this, this.owner), 0.0F)) {
                         this.hooked = movingobjectposition.entity;
+
+
                     }
                 } else {
                     this.as = true;

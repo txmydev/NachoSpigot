@@ -60,7 +60,7 @@ public class PacketDataSerializer extends ByteBuf {
     }
 
     public void a(byte[] abyte) {
-        this.writeVarInt(abyte.length); // Nacho - deobfuscate writeVarInt
+        this.b(abyte.length); // Nacho - deobfuscate writeVarInt
         this.writeBytes(abyte);
     }
 
@@ -103,7 +103,7 @@ public class PacketDataSerializer extends ByteBuf {
     }
 
     public void a(Enum<?> oenum) {
-        this.writeVarInt(oenum.ordinal()); // Nacho - deobfuscate writeVarInt
+        this.b(oenum.ordinal()); // Nacho - deobfuscate writeVarInt
     }
 
     public int readVarInt() { // Nacho - deobfuscate
@@ -117,22 +117,6 @@ public class PacketDataSerializer extends ByteBuf {
                 throw new RuntimeException("VarInt too big");
         } while ((b0 & 0x80) == 128);
         return i;
-    }
-
-    public int e() {
-        int var1 = 0;
-        int var2 = 0;
-
-        byte var3;
-        do {
-            var3 = this.readByte();
-            var1 |= (var3 & 127) << var2++ * 7;
-            if (var2 > 5) {
-                throw new RuntimeException("VarInt too big");
-            }
-        } while((var3 & 128) == 128);
-
-        return var1;
     }
 
     public long f() {
@@ -157,7 +141,7 @@ public class PacketDataSerializer extends ByteBuf {
         return new UUID(this.readLong(), this.readLong());
     }
 
-    public void writeVarInt(int i) { // Nacho - deobfuscate
+    public void b(int i) { // Nacho - deobfuscate
         while ((i & -128) != 0) {
             this.writeByte(i & 127 | 128);
             i >>>= 7;
@@ -166,13 +150,13 @@ public class PacketDataSerializer extends ByteBuf {
         this.writeByte(i);
     }
 
-    public void b(long i) {
-        while ((i & -128L) != 0L) {
-            this.writeByte((int) (i & 127L) | 128);
-            i >>>= 7;
+    public void b(long var1) {
+        while((var1 & -128L) != 0L) {
+            this.writeByte((int)(var1 & 127L) | 128);
+            var1 >>>= 7;
         }
 
-        this.writeByte((int) i);
+        this.writeByte((int)var1);
     }
 
     public void a(NBTTagCompound nbttagcompound) {
@@ -255,8 +239,8 @@ public class PacketDataSerializer extends ByteBuf {
         return itemstack;
     }
 
-    public String c(int var1) {
-        int var2 = this.e();
+    /*public String c(int var1) {
+        int var2 = this.readVarInt();
         if (var2 > var1 * 4) {
             throw new DecoderException("The received encoded string buffer length is longer than maximum allowed (" + var2 + " > " + var1 * 4 + ")");
         } else if (var2 < 0) {
@@ -269,7 +253,7 @@ public class PacketDataSerializer extends ByteBuf {
                 return var3;
             }
         }
-    }
+    }*/
 
     public String readUtf(int i) { // Nacho - deobfuscate
         int j = this.readVarInt();
@@ -291,7 +275,7 @@ public class PacketDataSerializer extends ByteBuf {
         if (abyte.length > 32767) {
             throw new EncoderException("String too big (was " + s.length() + " bytes encoded, max " + 32767 + ")");
         } else {
-            this.writeVarInt(abyte.length); // Nacho - deobfuscate writeVarInt
+            this.b(abyte.length); // Nacho - deobfuscate writeVarInt
             this.writeBytes(abyte);
             return this;
         }

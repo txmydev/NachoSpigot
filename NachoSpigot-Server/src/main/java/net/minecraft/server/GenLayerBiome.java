@@ -116,7 +116,7 @@ public class GenLayerBiome extends GenLayer {
                 } else if (b(var9)) {
                     var6[var8 + var7 * var3] = var9;
                 } else if (var9 == BiomeBase.MUSHROOM_ISLAND.id) {
-                    var6[var8 + var7 * var3] = var9;
+                        var6[var8 + var7 * var3] = var9;
                 } else if (var9 == 1) {
                     if (var10 > 0) {
                         if (this.a(3) == 0 && this.world.generatorConfig.biomeMesaPlateau) {
@@ -132,20 +132,22 @@ public class GenLayerBiome extends GenLayer {
                         var6[var8 + var7 * var3] = this.c[this.a(this.c.length)].id;
                     }
                 } else if (var9 == 2) {
-                    if (var10 > 0) {
+                    if (var10 > 0 && this.world.generatorConfig.biomeJungle) {
                         var6[var8 + var7 * var3] = BiomeBase.JUNGLE.id;
                     } else {
                         var6[var8 + var7 * var3] = this.d[this.a(this.d.length)].id;
                     }
                 } else if (var9 == 3) {
-                    if (var10 > 0) {
+                    if (var10 > 0 && world.generatorConfig.biomeMegaTaiga) {
                         var6[var8 + var7 * var3] = BiomeBase.MEGA_TAIGA.id;
                     } else {
                         var6[var8 + var7 * var3] = this.e[this.a(this.e.length)].id;
                     }
-                } else if (var9 == 4) {
+                }
+                // Who tf is gonna use ice plains lmfao
+                /* else if (var9 == 4) {
                     var6[var8 + var7 * var3] = this.f[this.a(this.f.length)].id;
-                } else {
+                }*/ else {
                     var6[var8 + var7 * var3] = BiomeBase.MUSHROOM_ISLAND.id;
                 }
             }
