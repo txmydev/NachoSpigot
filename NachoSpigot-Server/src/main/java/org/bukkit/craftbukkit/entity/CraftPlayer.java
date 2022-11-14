@@ -64,6 +64,10 @@ import org.bukkit.scoreboard.Scoreboard;
 // PaperSpigot start
 import com.destroystokyo.paper.Title;
 import txmy.dev.events.PlayerHealthChangeEvent;
+import txmy.dev.language.Language;
+import txmy.dev.language.LanguageEnum;
+import txmy.dev.language.LanguageManager;
+import txmy.dev.language.event.PlayerChangeLanguageEvent;
 // PaperSpigot end
 
 @DelegateDeserialization(CraftOfflinePlayer.class)
@@ -78,6 +82,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     private double health = 20;
     private boolean scaledHealth = false;
     private double healthScale = 20;
+    private Language language;
 
     public CraftPlayer(CraftServer server, EntityPlayer entity) {
         super(server, entity);
@@ -1747,6 +1752,21 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     @Override
     public int getPing() {
         return getHandle().ping;
+    }
+
+    @Override
+    public Language getLanguage() {
+        return language;
+    }
+
+    @Override
+    public void setLanguage(LanguageEnum language) {
+        Language to = LanguageManager.INSTANCE.getLanguage(language);
+
+        PlayerChangeLanguageEvent event = new PlayerChangeLanguageEvent(this, this.language, to);
+        this.language = to;
+
+        server.getPluginManager().callEvent(event);
     }
 
 }

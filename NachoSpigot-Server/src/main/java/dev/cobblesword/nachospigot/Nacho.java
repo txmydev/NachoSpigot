@@ -4,6 +4,7 @@ import dev.cobblesword.nachospigot.commands.KnockbackCommand;
 import dev.cobblesword.nachospigot.hitdetection.LagCompensator;
 import dev.cobblesword.nachospigot.protocol.MovementHandler;
 import me.elier.nachospigot.config.NachoConfig;
+import txmy.dev.language.LanguageManager;
 import xyz.sculas.nacho.anticrash.AntiCrash;
 import xyz.sculas.nacho.async.AsyncExplosions;
 import dev.cobblesword.nachospigot.protocol.PacketHandler;
@@ -27,6 +28,8 @@ public class Nacho {
 
     public Nacho() {
         INSTANCE = this;
+
+        LanguageManager.INSTANCE.load();
 
         AsyncExplosions.initExecutor(NachoConfig.useFixedPoolForTNT, NachoConfig.fixedPoolSize);
 
