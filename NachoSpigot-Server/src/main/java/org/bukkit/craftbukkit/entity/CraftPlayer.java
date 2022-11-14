@@ -1769,4 +1769,14 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         server.getPluginManager().callEvent(event);
     }
 
+    @Override
+    public void sendTranslatableMessage(String key, Object... values) {
+        this.language.getData().getString(key).send(this, values);
+    }
+
+    @Override
+    public void sendTranslatableListMessage(String key, Object[][]... values) {
+        this.language.getData().getList(key).send(this, values);
+    }
+
 }
