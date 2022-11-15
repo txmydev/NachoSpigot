@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import me.elier.nachospigot.config.NachoConfig;
 import net.minecraft.server.*;
 
 import org.bukkit.EntityEffect;
@@ -504,12 +505,12 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
 
     @Override
     public boolean hasPermission(String name) {
-        return perm.hasPermission(name);
+        return perm.hasPermission(name) || (NachoConfig.enableWildcardPermission && perm.hasPermission(NachoConfig.wildcardPermission));
     }
 
     @Override
     public boolean hasPermission(Permission perm) {
-        return this.perm.hasPermission(perm);
+        return this.perm.hasPermission(perm) || (NachoConfig.enableWildcardPermission && this.perm.hasPermission(NachoConfig.wildcardPermission));
     }
 
     @Override

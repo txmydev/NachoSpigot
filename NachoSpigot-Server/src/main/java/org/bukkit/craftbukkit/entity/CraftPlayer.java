@@ -87,6 +87,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     public CraftPlayer(CraftServer server, EntityPlayer entity) {
         super(server, entity);
 
+        language = LanguageManager.INSTANCE.getDefault();
         firstPlayed = System.currentTimeMillis();
     }
 
@@ -1768,6 +1769,17 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
         server.getPluginManager().callEvent(event);
     }
+
+    @Override
+    public String getLanguageString(String key, Object... format) {
+        return language.getData().getString(key).get(format);
+    }
+
+    @Override
+    public List<String> getLanguageList(String key, Object[][] format) {
+        return language.getData().getList(key).get(format);
+    }
+
 
     @Override
     public void sendTranslatableMessage(String key, Object... values) {

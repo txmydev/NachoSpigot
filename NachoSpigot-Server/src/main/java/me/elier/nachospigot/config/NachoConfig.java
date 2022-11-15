@@ -98,6 +98,8 @@ public class NachoConfig {
         set("world-settings.default.disable-sponge-absorption", nachoJson.disableSpongeAbsorption);
         set("settings.fix-eat-while-running", nachoJson.fixEatWhileRunning);
         set("settings.hide-projectiles-from-hidden-players", nachoJson.hideProjectilesFromHiddenPlayers);
+
+
         old_config.delete();
     }
 
@@ -408,5 +410,12 @@ public class NachoConfig {
 
     private static void disableDisconnectSpam() {
         disableDisconnectSpam = getBoolean("settings.disable-disconnect-spam", false);
+    }
+
+    public static boolean enableWildcardPermission;
+    public static final String wildcardPermission = "*";
+
+    private static void enableWildcardPermission() {
+        enableWildcardPermission = getBoolean("settings.enable-wildcard-permission", true);
     }
 }

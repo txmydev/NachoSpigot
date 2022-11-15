@@ -15,7 +15,7 @@ public enum LanguageManager {
         AtomicBoolean def = new AtomicBoolean(true);
 
         Arrays.stream(LanguageEnum.values()).forEach(lang -> {
-            addLanguage(lang.getLocale(), new LanguageData(), def.getAndSet(false));
+            addLanguage(lang.getLocale(), new LanguageData().setTimeUtil(lang.getTimeUtil()), def.getAndSet(false));
         });
     }
 

@@ -1,6 +1,7 @@
 package org.bukkit.entity;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 
 import org.bukkit.Achievement;
 import org.bukkit.ChatColor;
@@ -1472,5 +1473,8 @@ public interface Player extends HumanEntity, Conversable, CommandSender, Offline
 
     void sendTranslatableMessage(String key, Object... values);
     void sendTranslatableListMessage(String key, Object[][]... values);
+
+    String getLanguageString(String key, Object... format);
+    List<String> getLanguageList(String key, Object[][] format);
 
 }
