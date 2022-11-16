@@ -7,6 +7,9 @@ import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.conversations.ManuallyAbandonedConversationCanceller;
 import org.bukkit.craftbukkit.conversations.ConversationTracker;
+import txmy.dev.language.Language;
+import txmy.dev.language.LanguageEnum;
+import txmy.dev.language.LanguageManager;
 
 /**
  * Represents CLI input from a console
@@ -14,6 +17,8 @@ import org.bukkit.craftbukkit.conversations.ConversationTracker;
 public class CraftConsoleCommandSender extends ServerCommandSender implements ConsoleCommandSender {
 
     protected final ConversationTracker conversationTracker = new ConversationTracker();
+
+    private final static Language language = LanguageManager.INSTANCE.getLanguage(LanguageEnum.ENGLISH);
 
     protected CraftConsoleCommandSender() {
         super();

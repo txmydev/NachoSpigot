@@ -562,4 +562,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     public void setKnockbackProfile(KnockbackProfile profile) {
         getHandle().setKnockbackProfile(profile);
     }
+
+
+
 }

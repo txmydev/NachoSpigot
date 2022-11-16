@@ -3,6 +3,7 @@ package txmy.dev.language.message;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,24 +43,32 @@ public class ListLanguageMessage extends LanguageMessage<List<String>> {
         throw new UnsupportedOperationException("You should use send(CommandSender, Object[][] args)");
     }
 
-    @Override
-    public void send(CommandSender player, Object[][] args) {
+    private List<String> replace(Object[][] args) {
+        List<String> copy = new ArrayList<>(lines);
+
         for(int i = 0; i < args.length; i++) {
             Object[] argArray = args[i];
-            lines.set(i, String.format(lines.get(i), argArray));
+            copy.set(i, String.format(copy.get(i), argArray));
         }
 
-        send(player);
+        return copy;
+    }
+
+    @Override
+    public void send(CommandSender player, Object[][] args) {
+        List<String> copy = replace(args);
+
+        sendCopy(player, copy);
+    }
+
+    private void sendCopy(CommandSender player, List<String> list) {
+        list.forEach(line -> player.sendMessage(ChatColor.translateAlternateColorCodes('&',line)));
     }
 
     @Override
     public List<String> get(Object[][] args) {
-        for(int i = 0; i < args.length; i++) {
-            Object[] argArray = args[i];
-            lines.set(i, String.format(lines.get(i), argArray));
-        }
-
-        return lines;
+        // We create a copy if not it
+        return replace(args);
     }
 
     @Override

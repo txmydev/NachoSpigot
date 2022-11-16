@@ -988,7 +988,6 @@ public interface Server extends PluginMessageRecipient {
      * @return the active command map
      */
     CommandMap getCommandMap();
-
     // Paper end
 
     public class Spigot
