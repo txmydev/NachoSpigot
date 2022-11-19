@@ -464,45 +464,6 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
         return true;
     }
 
-    @Deprecated
-    public int _INVALID_getLastDamage() {
-        return NumberConversions.ceil(getLastDamage());
-    }
-
-    @Deprecated
-    public void _INVALID_setLastDamage(int damage) {
-        setLastDamage(damage);
-    }
-
-    @Deprecated
-    public void _INVALID_damage(int amount) {
-        damage(amount);
-    }
-
-    @Deprecated
-    public void _INVALID_damage(int amount, Entity source) {
-        damage(amount, source);
-    }
-
-    @Deprecated
-    public int _INVALID_getHealth() {
-        return NumberConversions.ceil(getHealth());
-    }
-
-    @Deprecated
-    public void _INVALID_setHealth(int health) {
-        setHealth(health);
-    }
-
-    @Deprecated
-    public int _INVALID_getMaxHealth() {
-        return NumberConversions.ceil(getMaxHealth());
-    }
-
-    @Deprecated
-    public void _INVALID_setMaxHealth(int health) {
-        setMaxHealth(health);
-    }
 
     // TacoSpigot start
     @Override
