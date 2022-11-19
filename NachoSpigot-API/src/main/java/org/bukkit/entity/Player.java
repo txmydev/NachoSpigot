@@ -1477,4 +1477,7 @@ public interface Player extends HumanEntity, Conversable, CommandSender, Offline
     String getLanguageString(String key, Object... format);
     List<String> getLanguageList(String key, Object[][] format);
 
+    List<String> getLanguageList(String key);
+
+
 }

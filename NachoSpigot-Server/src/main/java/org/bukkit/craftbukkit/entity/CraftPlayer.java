@@ -1780,6 +1780,10 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         return language.getData().getList(key).get(format);
     }
 
+    @Override
+    public List<String> getLanguageList(String key) {
+        return language.getData().getList(key).get();
+    }
 
     @Override
     public void sendTranslatableMessage(String key, Object... values) {
