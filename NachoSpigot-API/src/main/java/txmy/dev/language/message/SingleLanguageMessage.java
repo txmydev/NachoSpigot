@@ -30,4 +30,11 @@ public class SingleLanguageMessage extends LanguageMessage<String> {
     public String get() {
         return text;
     }
+
+    @Override
+    public String get(Object... args) {
+        return String.format(text, args);
+    }
+
+
 }
