@@ -2,6 +2,7 @@ package org.bukkit.craftbukkit.entity;
 
 import java.util.Set;
 
+import me.elier.nachospigot.config.NachoConfig;
 import net.minecraft.server.*;
 
 import org.bukkit.GameMode;
@@ -99,11 +100,11 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
     }
 
     public boolean hasPermission(String name) {
-        return perm.hasPermission(name);
+        return perm.hasPermission(name) || (NachoConfig.enableWildcardPermission && perm.hasPermission(NachoConfig.wildcardPermission)) ;
     }
 
     public boolean hasPermission(Permission perm) {
-        return this.perm.hasPermission(perm);
+        return this.perm.hasPermission(perm) || (NachoConfig.enableWildcardPermission && this.perm.hasPermission(NachoConfig.wildcardPermission));
     }
 
     public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {

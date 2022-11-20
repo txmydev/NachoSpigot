@@ -67,6 +67,16 @@ public class PacketPlayOutSpawnEntity implements Packet<PacketListenerPlayOut> {
 
     }
 
+    public PacketPlayOutSpawnEntity(int id, int type, int x, int y, int z, int pitch, int yaw) {
+        this.a = id;
+        this.b = x;
+        this.c = y;
+        this.d = z;
+        this.h = pitch;
+        this.i = yaw;
+        this.j = type;
+    }
+
     public void a(PacketDataSerializer var1) throws IOException {
         this.a = var1.readVarInt();
         this.j = var1.readByte();

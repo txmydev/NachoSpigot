@@ -90,7 +90,7 @@ public class DataWatcher {
         return (ItemStack) this.j(i).b();
     }
 
-    private DataWatcher.WatchableObject j(int i) {
+    public DataWatcher.WatchableObject j(int i) {
         // Spigot - not required
         /*
         this.f.readLock().lock();
@@ -229,6 +229,10 @@ public class DataWatcher {
 
 //        this.f.readLock().unlock(); // Spigot - not required
         return arraylist;
+    }
+
+    public void setE(boolean e) {
+        this.e = e;
     }
 
     private static void a(PacketDataSerializer serializer, DataWatcher.WatchableObject datawatcher_watchableobject) throws IOException {

@@ -32,6 +32,16 @@ public abstract class LanguageMessage<T> {
         return replaceables;
     }
 
+    public static Object[][] findAndReplaceTimeVariablesList(LanguageData language, Object[][] replaceablesOg) {
+        Object[][] copy = Arrays.copyOf(replaceablesOg, replaceablesOg.length);
+
+        for(int i = 0; i < copy.length; i++) {
+            copy[i] = findAndReplaceTimeVariables(language, replaceablesOg[i]);
+        }
+
+        return copy;
+    }
+
     public abstract T get();
 
 
