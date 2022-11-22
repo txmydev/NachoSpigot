@@ -418,4 +418,10 @@ public class NachoConfig {
     private static void enableWildcardPermission() {
         enableWildcardPermission = getBoolean("settings.enable-wildcard-permission", true);
     }
+
+    public static boolean enableLegacyEnchantments = true;
+
+    private static void enableLegacyEnchantments() {
+        enableLegacyEnchantments = getBoolean("settings.enable-legacy-enchantments", true);
+    }
 }

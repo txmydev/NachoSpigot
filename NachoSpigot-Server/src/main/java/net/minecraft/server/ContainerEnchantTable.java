@@ -6,6 +6,7 @@ import java.util.Random;
 // CraftBukkit start
 import java.util.Map;
 
+import me.elier.nachospigot.config.NachoConfig;
 import org.bukkit.craftbukkit.inventory.CraftInventoryEnchanting;
 import org.bukkit.craftbukkit.inventory.CraftInventoryView;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -53,7 +54,7 @@ public class ContainerEnchantTable extends Container {
         });
         this.a(new Slot(this.enchantSlots, 1, 35, 47) {
             public boolean isAllowed(ItemStack itemstack) {
-                return itemstack.getItem() == Items.DYE && EnumColor.fromInvColorIndex(itemstack.getData()) == EnumColor.BLUE;
+                return (itemstack.getItem() == Items.DYE && EnumColor.fromInvColorIndex(itemstack.getData()) == EnumColor.BLUE);
             }
         });
 
@@ -76,6 +77,7 @@ public class ContainerEnchantTable extends Container {
 
     public void addSlotListener(ICrafting icrafting) {
         super.addSlotListener(icrafting);
+
         icrafting.setContainerData(this, 0, this.costs[0]);
         icrafting.setContainerData(this, 1, this.costs[1]);
         icrafting.setContainerData(this, 2, this.costs[2]);
@@ -95,9 +97,17 @@ public class ContainerEnchantTable extends Container {
             icrafting.setContainerData(this, 1, this.costs[1]);
             icrafting.setContainerData(this, 2, this.costs[2]);
             icrafting.setContainerData(this, 3, this.f & -16);
-            icrafting.setContainerData(this, 4, this.h[0]);
-            icrafting.setContainerData(this, 5, this.h[1]);
-            icrafting.setContainerData(this, 6, this.h[2]);
+
+            // Tomi - Start
+            if(NachoConfig.enableLegacyEnchantments) {
+                icrafting.setContainerData(this, 4, -1);
+                icrafting.setContainerData(this, 5, -1);
+                icrafting.setContainerData(this, 6, -1);
+            } else {
+                icrafting.setContainerData(this, 4, this.h[0]);
+                icrafting.setContainerData(this, 5, this.h[1]);
+                icrafting.setContainerData(this, 6, this.h[2]);
+            }
         }
 
     }
