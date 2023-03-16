@@ -5,9 +5,9 @@ import me.elier.nachospigot.config.NachoConfig;
 import java.io.IOException;
 
 public class PacketPlayInUseEntity implements Packet<PacketListenerPlayIn> {
-    private int a;
-    private PacketPlayInUseEntity.EnumEntityUseAction action;
-    private Vec3D c;
+    public int a;
+    public PacketPlayInUseEntity.EnumEntityUseAction action;
+    public Vec3D c;
 
     public PacketPlayInUseEntity() {
     }

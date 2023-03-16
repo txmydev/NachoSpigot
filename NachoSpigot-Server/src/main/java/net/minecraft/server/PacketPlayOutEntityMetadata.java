@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class PacketPlayOutEntityMetadata implements Packet<PacketListenerPlayOut> {
-    private int a;
-    private List<DataWatcher.WatchableObject> b;
+    public int a;
+    public List<DataWatcher.WatchableObject> b;
 
     public PacketPlayOutEntityMetadata() {
     }
