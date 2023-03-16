@@ -677,8 +677,8 @@ public final class CraftServer implements Server {
         if (!Bukkit.isPrimaryThread()) {
             final CommandSender fSender = sender;
             final String fCommandLine = commandLine;
-            Bukkit.getLogger().log(Level.SEVERE, "Command Dispatched Async: " + commandLine);
-            Bukkit.getLogger().log(Level.SEVERE, "Please notify author of plugin causing this execution to fix this bug! see: http://bit.ly/1oSiM6C", new Throwable());
+            // Bukkit.getLogger().log(Level.SEVERE, "Command Dispatched Async: " + commandLine);
+            // Bukkit.getLogger().log(Level.SEVERE, "Please notify author of plugin causing this execution to fix this bug! see: http://bit.ly/1oSiM6C", new Throwable());
             org.bukkit.craftbukkit.util.Waitable<Boolean> wait = new org.bukkit.craftbukkit.util.Waitable<Boolean>() {
                 @Override
                 protected Boolean evaluate() {
