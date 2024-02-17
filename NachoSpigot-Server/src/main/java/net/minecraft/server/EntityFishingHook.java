@@ -1,20 +1,21 @@
 package net.minecraft.server;
 
+import dev.cobblesword.nachospigot.commons.Constants;
+import org.bukkit.entity.Fish;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.util.Vector;
+import txmy.dev.knockback.KnockbackProfile;
+
 import java.util.Arrays;
 import java.util.List;
-
-// CraftBukkit start
-import dev.cobblesword.nachospigot.commons.Constants;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Fish;
-import org.bukkit.event.player.PlayerFishEvent;
 // CraftBukkit end
 
 public class EntityFishingHook extends Entity {
 
-    private static final List<PossibleFishingResult> d = Arrays.asList(new PossibleFishingResult[] { (new PossibleFishingResult(new ItemStack(Items.LEATHER_BOOTS), 10)).a(0.9F), new PossibleFishingResult(new ItemStack(Items.LEATHER), 10), new PossibleFishingResult(new ItemStack(Items.BONE), 10), new PossibleFishingResult(new ItemStack(Items.POTION), 10), new PossibleFishingResult(new ItemStack(Items.STRING), 5), (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 2)).a(0.9F), new PossibleFishingResult(new ItemStack(Items.BOWL), 10), new PossibleFishingResult(new ItemStack(Items.STICK), 5), new PossibleFishingResult(new ItemStack(Items.DYE, 10, EnumColor.BLACK.getInvColorIndex()), 1), new PossibleFishingResult(new ItemStack(Blocks.TRIPWIRE_HOOK), 10), new PossibleFishingResult(new ItemStack(Items.ROTTEN_FLESH), 10)});
-    private static final List<PossibleFishingResult> e = Arrays.asList(new PossibleFishingResult[] { new PossibleFishingResult(new ItemStack(Blocks.WATERLILY), 1), new PossibleFishingResult(new ItemStack(Items.NAME_TAG), 1), new PossibleFishingResult(new ItemStack(Items.SADDLE), 1), (new PossibleFishingResult(new ItemStack(Items.BOW), 1)).a(0.25F).a(), (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 1)).a(0.25F).a(), (new PossibleFishingResult(new ItemStack(Items.BOOK), 1)).a()});
-    private static final List<PossibleFishingResult> f = Arrays.asList(new PossibleFishingResult[] { new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.COD.a()), 60), new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.SALMON.a()), 25), new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.CLOWNFISH.a()), 2), new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.PUFFERFISH.a()), 13)});
+    private static final List<PossibleFishingResult> d = Arrays.asList(new PossibleFishingResult[]{(new PossibleFishingResult(new ItemStack(Items.LEATHER_BOOTS), 10)).a(0.9F), new PossibleFishingResult(new ItemStack(Items.LEATHER), 10), new PossibleFishingResult(new ItemStack(Items.BONE), 10), new PossibleFishingResult(new ItemStack(Items.POTION), 10), new PossibleFishingResult(new ItemStack(Items.STRING), 5), (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 2)).a(0.9F), new PossibleFishingResult(new ItemStack(Items.BOWL), 10), new PossibleFishingResult(new ItemStack(Items.STICK), 5), new PossibleFishingResult(new ItemStack(Items.DYE, 10, EnumColor.BLACK.getInvColorIndex()), 1), new PossibleFishingResult(new ItemStack(Blocks.TRIPWIRE_HOOK), 10), new PossibleFishingResult(new ItemStack(Items.ROTTEN_FLESH), 10)});
+    private static final List<PossibleFishingResult> e = Arrays.asList(new PossibleFishingResult[]{new PossibleFishingResult(new ItemStack(Blocks.WATERLILY), 1), new PossibleFishingResult(new ItemStack(Items.NAME_TAG), 1), new PossibleFishingResult(new ItemStack(Items.SADDLE), 1), (new PossibleFishingResult(new ItemStack(Items.BOW), 1)).a(0.25F).a(), (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 1)).a(0.25F).a(), (new PossibleFishingResult(new ItemStack(Items.BOOK), 1)).a()});
+    private static final List<PossibleFishingResult> f = Arrays.asList(new PossibleFishingResult[]{new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.COD.a()), 60), new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.SALMON.a()), 25), new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.CLOWNFISH.a()), 2), new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.PUFFERFISH.a()), 13)});
     private int g = -1;
     private int h = -1;
     private int i = -1;
@@ -65,7 +66,8 @@ public class EntityFishingHook extends Entity {
         this.c(this.motX, this.motY, this.motZ, 1.5F, 1.0F);
     }
 
-    protected void h() {}
+    protected void h() {
+    }
 
     public void c(double d0, double d1, double d2, float f, float f1) {
         float f2 = MathHelper.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
@@ -190,19 +192,29 @@ public class EntityFishingHook extends Entity {
 
             // PaperSpigot start - Allow fishing hooks to fly through vanished players the shooter can't see
             if (movingobjectposition != null && movingobjectposition.entity instanceof EntityPlayer && owner != null && owner instanceof EntityPlayer) {
-                if (!((EntityPlayer) owner).getBukkitEntity().canSee(((EntityPlayer) movingobjectposition.entity).getBukkitEntity())) {
+                EntityPlayer hit = (EntityPlayer) movingobjectposition.entity;
+
+                if (!((EntityPlayer) owner).getBukkitEntity().canSee(hit.getBukkitEntity())) {
                     movingobjectposition = null;
                 }
             }
             // PaperSpigot end
-
             if (movingobjectposition != null) {
                 org.bukkit.craftbukkit.event.CraftEventFactory.callProjectileHitEvent(this); // Craftbukkit - Call event
-                if (movingobjectposition.entity != null) {
-                    if (movingobjectposition.entity.damageEntity(DamageSource.projectile(this, this.owner), 0.0F)) {
-                        this.hooked = movingobjectposition.entity;
 
-
+                if (entity != null) {
+                    if (owner != null) {
+                        if (entity.damageEntity(DamageSource.projectile(this, this.owner), 0.0F)) {
+                            if (entity instanceof EntityPlayer) {
+                                EntityPlayer player = (EntityPlayer) entity;
+                                KnockbackProfile profile = player.getKnockback();
+                                Vector unitVector = new Vector(motX, motY, motZ).normalize();
+                                entity.motX = unitVector.getX() / 1.6D * profile.rodH.value;
+                                entity.motY = 0.36D * profile.rodV.value;
+                                entity.motZ = unitVector.getZ() / 1.6D * profile.rodH.value;
+                            }
+                            hooked = entity;
+                        }
                     }
                 } else {
                     this.as = true;
@@ -410,7 +422,7 @@ public class EntityFishingHook extends Entity {
                     return 0;
                 }
                 // CraftBukkit end
-                
+
                 double d0 = this.owner.locX - this.locX;
                 double d1 = this.owner.locY - this.locY;
                 double d2 = this.owner.locZ - this.locZ;
@@ -444,7 +456,7 @@ public class EntityFishingHook extends Entity {
                 this.world.addEntity(entityitem);
                 // CraftBukkit start - this.random.nextInt(6) + 1 -> playerFishEvent.getExpToDrop()
                 if (playerFishEvent.getExpToDrop() > 0) {
-                this.owner.world.addEntity(new EntityExperienceOrb(this.owner.world, this.owner.locX, this.owner.locY + 0.5D, this.owner.locZ + 0.5D, playerFishEvent.getExpToDrop()));
+                    this.owner.world.addEntity(new EntityExperienceOrb(this.owner.world, this.owner.locX, this.owner.locY + 0.5D, this.owner.locZ + 0.5D, playerFishEvent.getExpToDrop()));
                 } // CraftBukkit end
                 b0 = 1;
             }

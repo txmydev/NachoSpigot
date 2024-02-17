@@ -21,6 +21,18 @@ public class BaseBlockPosition implements Comparable<BaseBlockPosition> {
         this(MathHelper.floor(d0), MathHelper.floor(d1), MathHelper.floor(d2));
     }
 
+    public void setX(int x) {
+        this.a = x;
+    }
+
+    public void setY(int y) {
+        this.c = y;
+    }
+
+    public void setZ(int z) {
+        this.d = z;
+    }
+
     public final boolean equals(Object object) { //Paper
         if (this == object) {
             return true;

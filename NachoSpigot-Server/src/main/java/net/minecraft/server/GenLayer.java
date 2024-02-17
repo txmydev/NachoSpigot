@@ -79,7 +79,6 @@ public abstract class GenLayer {
         }
 
         GenLayerSmooth var29 = new GenLayerSmooth(1000L, (GenLayer)var28);
-        System.out.println(var28 == null);
 
         GenLayerRiverMix var30 = new GenLayerRiverMix(100L, var29, genlayersmooth);
         GenLayerZoomVoronoi var12 = new GenLayerZoomVoronoi(10L, var30);

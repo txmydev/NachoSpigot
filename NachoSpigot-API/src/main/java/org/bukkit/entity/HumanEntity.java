@@ -8,6 +8,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.permissions.Permissible;
+import txmy.dev.knockback.KnockbackProfile;
 
 /**
  * Represents a human entity, such as an NPC or a player
@@ -196,4 +197,10 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
         setAbsorption(getAbsorption() + amount);
     }
     // Nacho end
+
+    KnockbackProfile getKnockbackProfile();
+
+    void setKnockbackProfile(KnockbackProfile profile);
+
+    boolean hasCustomKnockback();
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 // CraftBukkit start
 import dev.cobblesword.nachospigot.commons.Constants;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -12,6 +13,9 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import net.techcable.tacospigot.event.entity.ArrowCollideEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
+import org.bukkit.util.Vector;
+import txmy.dev.knockback.KnockbackModule;
+import txmy.dev.knockback.KnockbackProfile;
 // TacoSpigot end
 
 public class EntityArrow extends Entity implements IProjectile {
@@ -277,20 +281,50 @@ public class EntityArrow extends Entity implements IProjectile {
                                 entityliving.setArrowsStuck(entityliving.getArrowsStuck() + 1); // Nacho - deobfuscate getArrowsStuck, setArrowsStuck
                             }
 
-                            if (this.knockbackStrength > 0) {
-                                f3 = MathHelper.sqrt(this.motX * this.motX + this.motZ * this.motZ);
-                                if (f3 > 0.0F) {
-                                    movingobjectposition.entity.g(this.motX * (double) this.knockbackStrength * 0.6000000238418579D / (double) f3, 0.1D, this.motZ * (double) this.knockbackStrength * 0.6000000238418579D / (double) f3);
+                            if (movingobjectposition.entity.bukkitEntity.getType() == EntityType.PLAYER) {
+                                EntityPlayer hit = (EntityPlayer) movingobjectposition.entity;
+
+                                if (shooter != null && shooter != hit && shooter instanceof EntityPlayer) {
+                                    ((EntityPlayer) this.shooter).playerConnection.sendPacket(new PacketPlayOutGameStateChange(6, 0.0F));
                                 }
-                            }
 
-                            if (this.shooter instanceof EntityLiving) {
-                                EnchantmentManager.a(entityliving, this.shooter);
-                                EnchantmentManager.b((EntityLiving) this.shooter, entityliving);
-                            }
+                                KnockbackProfile kb = hit.hasCustomKnockback() ? hit.getKnockbackProfile() : KnockbackModule.getDefault();
 
-                            if (this.shooter != null && movingobjectposition.entity != this.shooter && movingobjectposition.entity instanceof EntityHuman && this.shooter instanceof EntityPlayer) {
-                                ((EntityPlayer) this.shooter).playerConnection.sendPacket(new PacketPlayOutGameStateChange(6, 0.0F));
+                                double velX, velY, velZ;
+
+                                Vector v = new Vector(motX, motY, motZ).normalize();
+                                velX = (v.getX() / 1.6) * kb.bowH.value;
+                                velY = 0.36 * kb.bowV.value;
+                                velZ = (v.getZ() / 1.6) * kb.bowH.value;
+
+                                if (knockbackStrength > 0) {
+                                    velX *= knockbackStrength + 1;
+                                    velY *= knockbackStrength + 1;
+                                    velZ *= knockbackStrength + 1;
+                                }
+
+                                hit.playerConnection.sendPacket(new PacketPlayOutEntityVelocity(hit.getId(), velX, velY, velZ));
+                                hit.velocityChanged = false;
+                                hit.motX = velX;
+                                hit.motY = velY;
+                                hit.motZ = velZ;
+
+                            } else {
+                                if (this.knockbackStrength > 0) {
+                                    f3 = MathHelper.sqrt(this.motX * this.motX + this.motZ * this.motZ);
+                                    if (f3 > 0.0F) {
+                                        movingobjectposition.entity.g(this.motX * (double) this.knockbackStrength * 0.6000000238418579D / (double) f3, 0.1D, this.motZ * (double) this.knockbackStrength * 0.6000000238418579D / (double) f3);
+                                    }
+                                }
+
+                                if (this.shooter instanceof EntityLiving) {
+                                    EnchantmentManager.a(entityliving, this.shooter);
+                                    EnchantmentManager.b((EntityLiving) this.shooter, entityliving);
+                                }
+
+                                if (this.shooter != null && movingobjectposition.entity != this.shooter && movingobjectposition.entity instanceof EntityHuman && this.shooter instanceof EntityPlayer) {
+                                    ((EntityPlayer) this.shooter).playerConnection.sendPacket(new PacketPlayOutGameStateChange(6, 0.0F));
+                                }
                             }
                         }
 

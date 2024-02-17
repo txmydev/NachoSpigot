@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import dev.cobblesword.nachospigot.knockback.KnockbackProfile;
 import net.minecraft.server.DamageSource;
 import net.minecraft.server.EntityArmorStand;
 import net.minecraft.server.EntityArrow;
@@ -513,17 +512,6 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
             getHandle().heal(amount, reason);
     }
     // Nacho end
-
-    @Override
-    public KnockbackProfile getKnockbackProfile() {
-        return getHandle().getKnockbackProfile();
-    }
-
-    @Override
-    public void setKnockbackProfile(KnockbackProfile profile) {
-        getHandle().setKnockbackProfile(profile);
-    }
-
 
 
 }

@@ -125,4 +125,8 @@ public interface Chunk {
     boolean unload();
 
     public List<Block> getBlocks(Material material);
+
+    txmy.dev.chunk.ChunkSnapshot takeSnapshot();
+
+    void restoreSnapshot(txmy.dev.chunk.ChunkSnapshot snapshot);
 }

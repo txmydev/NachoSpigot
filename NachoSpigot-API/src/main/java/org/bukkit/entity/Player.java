@@ -22,6 +22,7 @@ import org.bukkit.plugin.messaging.PluginMessageRecipient;
 import org.bukkit.scoreboard.Scoreboard;
 // PaperSpigot start
 import com.destroystokyo.paper.Title;
+import txmy.dev.knockback.KnockbackProfile;
 import txmy.dev.language.Language;
 import txmy.dev.language.LanguageEnum;
 // PaperSpigot end
@@ -1478,6 +1479,5 @@ public interface Player extends HumanEntity, Conversable, CommandSender, Offline
     List<String> getLanguageList(String key, Object[][] format);
 
     List<String> getLanguageList(String key);
-
 
 }

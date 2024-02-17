@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 import com.destroystokyo.paper.PaperConfig;
 import dev.cobblesword.nachospigot.Nacho;
 import dev.cobblesword.nachospigot.commons.IPUtils;
-import dev.cobblesword.nachospigot.knockback.KnockbackConfig;
 import me.elier.nachospigot.config.NachoConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -177,7 +176,6 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
             }
             // Spigot start
             NachoConfig.init((File) options.valueOf("nacho-settings")); // NachoSpigot - Load config before PlayerList
-            KnockbackConfig.init((File) options.valueOf("knockback-settings"));
             this.setPlayerList(new DedicatedPlayerList(this)); // Nacho - deobfuscate setPlayerList
             org.spigotmc.SpigotConfig.init((File) options.valueOf("spigot-settings"));
             org.spigotmc.SpigotConfig.registerCommands();

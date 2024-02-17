@@ -73,6 +73,9 @@ public class NibbleArray {
 
     public byte[] getBytes() { return this.a; }
 
+    public NibbleArray clone() {
+        return new NibbleArray(this.a.clone());
+    }
     public boolean isDummy() {
         return dummy;
     }

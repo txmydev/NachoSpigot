@@ -9,10 +9,8 @@ import java.util.List;
 import java.util.UUID;
 
 // CraftBukkit start
-import dev.cobblesword.nachospigot.knockback.KnockbackConfig;
-import dev.cobblesword.nachospigot.knockback.KnockbackProfile;
-import dev.cobblesword.nachospigot.slknockback.KnockbackModule;
-import dev.cobblesword.nachospigot.slknockback.SLKnockbackProfile;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.entity.CraftItem;
@@ -27,6 +25,8 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.util.Vector;
 import txmy.dev.events.PlayerHealthChangeEvent;
+import txmy.dev.knockback.KnockbackModule;
+import txmy.dev.knockback.KnockbackProfile;
 // CraftBukkit end
 
 public abstract class EntityHuman extends EntityLiving {
@@ -76,6 +76,10 @@ public abstract class EntityHuman extends EntityLiving {
     public String spawnWorld = "";
     public int oldLevel = -1;
     private boolean shouldDealSprintKnockback;
+
+    @Getter @Setter
+    private KnockbackProfile knockbackProfile;
+    private int ticksDown;
 
     @Override
     public CraftHumanEntity getBukkitEntity() {
@@ -1019,113 +1023,126 @@ public abstract class EntityHuman extends EntityLiving {
                     boolean flag2 = entity.damageEntity(DamageSource.playerAttack(this), f);
 
                     if (flag2) {
-                        /*if (i > 0) {
-                            KnockbackProfile profile = (entity.getKnockbackProfile() == null) ?
-                                    KnockbackConfig.getCurrentKb() : entity.getKnockbackProfile();
-                            entity.g(
-                                    (-MathHelper.sin((float) (this.yaw * Math.PI / 180.0D)) * i * profile.getExtraHorizontal()),
-                                   profile.getExtraVertical(),
-                                    (MathHelper.cos((float) (this.yaw * Math.PI / 180.0D)) * i * profile.getExtraHorizontal()));
-                            this.motX *= 0.6D;
-                            this.motZ *= 0.6D;
-                            if (profile.isStopSprint()) this.setExtraKnockback(false); //Nacho - Prevent desync player sprinting
-                        }
-
                         if (entity instanceof EntityPlayer && entity.velocityChanged) {
-                            Player player = (Player) entity.getBukkitEntity();
-                            final Vector velocity = new Vector(entity.motX, entity.motY, entity.motZ);
-                            PlayerVelocityEvent event = new PlayerVelocityEvent(player, velocity, true);
-                            world.getServer().getPluginManager().callEvent(event);
-
-                            if (!event.isCancelled()) {
-                                if (!velocity.equals(event.getVelocity())) {
-                                    player.setVelocity(event.getVelocity());
-                                }
-                                ((EntityPlayer) entity).playerConnection.sendPacket(new PacketPlayOutEntityVelocity(entity));
-                                entity.velocityChanged = false;
-                                entity.motX = d0;
-                                entity.motY = d1;
-                                entity.motZ = d2;
-                            }
-                            // CraftBukkit end
-                        }*/
-
-                        if (entity instanceof EntityPlayer && entity.velocityChanged) {
-                            // bSpigot - Second Life Knockback Start
                             try {
-                                EntityPlayer victim = (EntityPlayer)entity;
-                                SLKnockbackProfile knockback = KnockbackModule.getDefault();
-                                double velX = 0.0D, velY = 0.0D, velZ = 0.0D;
+                                EntityPlayer victim = (EntityPlayer) entity;
+                                KnockbackProfile knockback = victim.hasCustomKnockback() ? victim.getKnockbackProfile() : KnockbackModule.getDefault();
+
+                                double velX = 0, velY = 0, velZ = 0;
+
                                 if (knockback.onePointOneKnockback.value) {
-                                    Vector v = (new Vector(entity.locX - this.locX, 0.0D, entity.locZ - this.locZ)).normalize();
+                                    Vector v = new Vector(entity.locX - locX, 0, entity.locZ - locZ).normalize();
+
                                     velX = v.getX();
-                                    velY = knockback.vertical.value.doubleValue();
+                                    velY = knockback.vertical.value;
                                     velZ = v.getZ();
-                                    double yOff = entity.locY - this.locY;
+
+                                    double yOff = entity.locY - locY;
+
+                                    if (knockback.comboMode.value) {
+                                        if (yOff > 2.5) ticksDown = MinecraftServer.currentTick;
+                                        if (yOff > 2.5 || MinecraftServer.currentTick - ticksDown < 10) {
+                                            velY = -0.05;
+                                        }
+                                    }
+
                                     velX *= knockback.horizontal.value;
                                     velZ *= knockback.horizontal.value;
-                                    if (this.shouldDealSprintKnockback) {
-                                        velX *= knockback.sprintH.value.doubleValue();
-                                        velY *= knockback.sprintV.value.doubleValue();
-                                        velZ *= knockback.sprintH.value.doubleValue();
+
+                                    if (shouldDealSprintKnockback) {
+                                        velX *= knockback.sprintH.value;
+                                        velY *= knockback.sprintV.value;
+                                        velZ *= knockback.sprintH.value;
                                     }
+
                                     if (isSprinting()) {
-                                        this.motX *= knockback.slowdown.value.doubleValue();
-                                        this.motZ *= knockback.slowdown.value.doubleValue();
-                                        this.shouldDealSprintKnockback = false;
-                                        if (knockback.stopSprint.value.booleanValue())
+                                        motX *= knockback.slowdown.value;
+                                        motZ *= knockback.slowdown.value;
+
+                                        shouldDealSprintKnockback = false;
+
+                                        if (knockback.stopSprint.value) {
                                             setSprinting(false);
+                                        }
                                     }
                                 } else {
-                                    if (knockback.inheritH.value.booleanValue()) {
-                                        double entityVelX = victim.motX * knockback.frictionH.value.doubleValue();
-                                        double entityVelZ = victim.motZ * knockback.frictionH.value.doubleValue();
-                                        velX = entityVelX + Math.sin(Math.toRadians(this.yaw)) * -1.0D;
-                                        velZ = entityVelZ + Math.cos(Math.toRadians(this.yaw));
+                                    if (knockback.inheritH.value) {
+                                        double entityVelX = victim.motX * knockback.frictionH.value;
+                                        double entityVelZ = victim.motZ * knockback.frictionH.value;
+
+                                        velX = entityVelX + Math.sin(Math.toRadians(yaw)) * -1.0F;
+                                        velZ = entityVelZ + Math.cos(Math.toRadians(yaw));
                                     } else {
-                                        velX = Math.sin(Math.toRadians(getHeadRotation())) * -1.0D;
+                                        velX = Math.sin(Math.toRadians(getHeadRotation())) * -1.0F;
                                         velZ = Math.cos(Math.toRadians(getHeadRotation()));
                                     }
-                                    velX *= knockback.horizontal.value.doubleValue();
-                                    velZ *= knockback.horizontal.value.doubleValue();
-                                    if (knockback.inheritV.value.booleanValue()) {
-                                        double entityVelY = victim.motY * knockback.frictionV.value.doubleValue();
-                                        velY = entityVelY + knockback.vertical.value.doubleValue();
+
+
+                                    velX *= knockback.horizontal.value;
+                                    velZ *= knockback.horizontal.value;
+
+                                    if (knockback.inheritV.value) {
+                                        double entityVelY = victim.motY * knockback.frictionV.value;
+
+                                        velY = entityVelY + knockback.vertical.value;
                                     } else {
-                                        velY = knockback.vertical.value.doubleValue();
+                                        velY = knockback.vertical.value;
                                     }
+
+
                                     if (victim.onGround) {
-                                        velX *= knockback.groundH.value.doubleValue();
-                                        velY *= knockback.groundV.value.doubleValue();
-                                        velZ *= knockback.groundH.value.doubleValue();
+                                        velX *= knockback.groundH.value;
+                                        velY *= knockback.groundV.value;
+                                        velZ *= knockback.groundH.value;
                                     }
+
                                     int enchLvl = EnchantmentManager.getEnchantmentLevel(Enchantment.KNOCKBACK.id, this.inventory.getItemInHand()) + 1;
                                     if (enchLvl > 0) {
                                         velX *= enchLvl;
                                         velZ *= enchLvl;
                                     }
-                                    if (this.shouldDealSprintKnockback) {
-                                        velX *= knockback.sprintH.value.doubleValue();
-                                        velY *= knockback.sprintV.value.doubleValue();
-                                        velZ *= knockback.sprintH.value.doubleValue();
-                                        this.shouldDealSprintKnockback = false;
+
+                                    if (shouldDealSprintKnockback) {
+                                        velX *= knockback.sprintH.value;
+                                        velY *= knockback.sprintV.value;
+                                        velZ *= knockback.sprintH.value;
+
+                                        shouldDealSprintKnockback = false;
                                     }
+
                                     if (isSprinting()) {
-                                        this.motX *= knockback.slowdown.value.doubleValue();
-                                        this.motZ *= knockback.slowdown.value.doubleValue();
-                                        this.shouldDealSprintKnockback = false;
-                                        if (knockback.stopSprint.value.booleanValue())
+                                        motX *= knockback.slowdown.value;
+                                        motZ *= knockback.slowdown.value;
+                                        shouldDealSprintKnockback = false;
+
+                                        if (knockback.stopSprint.value) {
                                             setSprinting(false);
+                                        }
                                     }
-                                    double yOff = entity.locY - this.locY;
-                                    if (knockback.limitVertical.value &&
-                                            yOff > knockback.ylimit.value.doubleValue())
-                                        velY = 0.0D;
+
+                                    if (knockback.comboMode.value) {
+                                        double yOff = entity.locY - locY;
+
+                                        if (yOff > knockback.comboHeight.value) ticksDown = MinecraftServer.currentTick;
+                                        if (yOff > knockback.comboHeight.value || MinecraftServer.currentTick - ticksDown < knockback.comboTicks.value) {
+                                            velY = knockback.comboVelocity.value;
+                                        }
+                                    }
+
+                                    double yOff = entity.locY - locY;
+
+                                    if (knockback.limitVertical.value) {
+                                        if (yOff > knockback.ylimit.value) {
+                                            velY = 0;
+                                        }
+                                    }
                                 }
+
                                 PlayerVelocityEvent event = new PlayerVelocityEvent(victim.getBukkitEntity(), new Vector(velX, velY, velZ));
                                 Bukkit.getPluginManager().callEvent(event);
-                                if (!event.isCancelled())
+                                if (!event.isCancelled()) {
                                     victim.playerConnection.sendPacket(new PacketPlayOutEntityVelocity(victim.getId(), velX, velY, velZ));
+                                }
                                 victim.velocityChanged = false;
                                 victim.motX = velX;
                                 victim.motY = velY;
@@ -1133,10 +1150,8 @@ public abstract class EntityHuman extends EntityLiving {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-
-                            // bSpigot - Second Life Knockback End
                         }
-                        // Kohi end
+                        // End
 
                         if (flag) {
                             this.b(entity);
@@ -1859,6 +1874,10 @@ public abstract class EntityHuman extends EntityLiving {
         return MinecraftServer.getServer().worldServer[0].getGameRules().getBoolean("sendCommandFeedback");
     }
 
+    public boolean hasCustomKnockback() {
+        return knockbackProfile != null;
+    }
+
     public boolean d(int i, ItemStack itemstack) {
         if (i >= 0 && i < this.inventory.items.length) {
             this.inventory.setItem(i, itemstack);
@@ -1891,6 +1910,10 @@ public abstract class EntityHuman extends EntityLiving {
                 }
             }
         }
+    }
+
+    public KnockbackProfile getKnockback() {
+        return this.hasCustomKnockback() ? this.knockbackProfile : KnockbackModule.getDefault();
     }
 
     static class SyntheticClass_1 {

@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.HashMap;
 
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 // CraftBukkit end
 
 import me.elier.nachospigot.config.NachoConfig;
+import txmy.dev.knockback.KnockbackModule;
 
 public class EntityPotion extends EntityProjectile {
 
@@ -40,16 +42,23 @@ public class EntityPotion extends EntityProjectile {
         this.item = itemstack;
     }
 
+
     protected float m() {
-        return 0.05F;
+        return shooter.bukkitEntity.getType() == EntityType.PLAYER ?
+                ((EntityHuman) shooter).getKnockback().potionFallSpeed.value.floatValue() :
+                KnockbackModule.getDefault().potionFallSpeed.value.floatValue();
     }
 
     protected float j() {
-        return 0.5F;
+        return shooter.bukkitEntity.getType() == EntityType.PLAYER ?
+                ((EntityHuman) shooter).getKnockback().potionThrowMultiplier.value.floatValue() :
+                KnockbackModule.getDefault().potionThrowMultiplier.value.floatValue();
     }
 
     protected float l() {
-        return -20.0F;
+        return shooter.bukkitEntity.getType() == EntityType.PLAYER ?
+                ((EntityHuman) shooter).getKnockback().potionThrowOffset.value.floatValue() :
+                KnockbackModule.getDefault().potionThrowOffset.value.floatValue();
     }
 
     public void setPotionValue(int i) {

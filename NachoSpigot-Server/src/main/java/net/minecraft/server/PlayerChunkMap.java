@@ -345,6 +345,12 @@ public class PlayerChunkMap {
         return i * 16 - 16;
     }
 
+    public void resend(int x, int z) {
+        PlayerChunk chunk = a(x, z, false);
+        if (chunk != null)
+            chunk.resend();
+    }
+
     class PlayerChunk {
 
         private final List<EntityPlayer> b = Lists.newArrayList();
@@ -432,6 +438,12 @@ public class PlayerChunkMap {
             }
         }
 
+        public void resend() {
+            if (this.dirtyCount == 0)
+                (PlayerChunkMap.this.a().getPlayerChunkMap()).e.add(this);
+            this.dirtyCount = 64;
+            this.f = 65535;
+        }
         public void a() {
             this.a(PlayerChunkMap.this.world.getChunkAt(this.location.x, this.location.z));
         }

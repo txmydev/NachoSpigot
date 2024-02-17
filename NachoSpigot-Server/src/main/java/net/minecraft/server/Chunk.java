@@ -41,7 +41,7 @@ public class Chunk {
     private boolean done;
     private boolean lit;
     private boolean p;
-    private boolean q;
+    public boolean q;
     private boolean r;
     private long lastSaved;
     private int t;

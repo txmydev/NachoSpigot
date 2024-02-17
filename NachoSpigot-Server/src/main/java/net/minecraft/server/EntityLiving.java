@@ -4,8 +4,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import dev.cobblesword.nachospigot.commons.Constants;
-import dev.cobblesword.nachospigot.knockback.KnockbackConfig;
-import dev.cobblesword.nachospigot.knockback.KnockbackProfile;
 import me.elier.nachospigot.config.NachoConfig;
 import net.jafama.FastMath;
 import org.bukkit.Bukkit;
@@ -17,6 +15,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.spigotmc.event.entity.EntityDismountEvent;
+import txmy.dev.knockback.KnockbackModule;
 
 import java.util.*;
 // PaperSpigot end
@@ -741,7 +740,16 @@ public abstract class EntityLiving extends Entity {
                         return false;
                     }
                     this.lastDamage = f;
-                    this.noDamageTicks = this.maxNoDamageTicks;
+                    int newNoDamageTicks;
+
+                    if (this instanceof EntityHuman) {
+                        EntityHuman human = (EntityHuman) this;
+                        newNoDamageTicks = human.hasCustomKnockback() ? human.getKnockbackProfile().hitDelay.value : KnockbackModule.getDefault().hitDelay.value;
+                    } else {
+                        newNoDamageTicks = this.maxNoDamageTicks;
+                    }
+
+                    this.noDamageTicks = newNoDamageTicks;
                     // CraftBukkit end
                     this.hurtTicks = this.av = 10;
                 }
@@ -898,44 +906,9 @@ public abstract class EntityLiving extends Entity {
             double horizontal = 0.4D;
             double vertical = 0.4D;
 
-            KnockbackProfile kb = (this.getKnockbackProfile() == null) ? KnockbackConfig.getCurrentKb() : this.getKnockbackProfile();
-
-            if (source instanceof EntityDamageSourceIndirect) {
-                if (((EntityDamageSourceIndirect) source).getProximateDamageSource() instanceof EntityFishingHook) {
-                    horizontal = kb.getRodHorizontal();
-                    vertical = kb.getRodVertical();
-                }
-                if (((EntityDamageSourceIndirect) source).getProximateDamageSource() instanceof EntityArrow) {
-                    horizontal = kb.getArrowHorizontal();
-                    vertical = kb.getArrowVertical();
-                }
-                if (((EntityDamageSourceIndirect) source).getProximateDamageSource() instanceof EntitySnowball) {
-                    horizontal = kb.getSnowballHorizontal();
-                    vertical = kb.getSnowballVertical();
-                }
-                if (((EntityDamageSourceIndirect) source).getProximateDamageSource() instanceof EntityEgg) {
-                    horizontal = kb.getEggHorizontal();
-                    vertical = kb.getEggVertical();
-                }
-                if (((EntityDamageSourceIndirect) source).getProximateDamageSource() instanceof EntityEnderPearl) {
-                    horizontal = kb.getPearlHorizontal();
-                    vertical = kb.getPearlVertical();
-                }
-            } else {
-                horizontal = kb.getHorizontal();
-                vertical = kb.getVertical();
-            }
-
-            //
-            this.motX *= kb.getFrictionHorizontal();
-            this.motY *= kb.getFrictionVertical();
-            this.motZ *= kb.getFrictionHorizontal();
-
             this.motX -= x / magnitude * horizontal;
             this.motY += vertical;
             this.motZ -= z / magnitude * horizontal;
-            if (this.motY > kb.getVerticalMax()) this.motY = kb.getVerticalMax();
-            if (this.motY < kb.getVerticalMin()) this.motY = kb.getVerticalMin();
         }
     }
 

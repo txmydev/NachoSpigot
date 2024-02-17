@@ -28,6 +28,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import txmy.dev.knockback.KnockbackProfile;
 
 public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
     private CraftInventoryPlayer inventory;
@@ -370,5 +371,20 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
 
     public void setAbsorption(float amount){
         getHandle().setAbsorptionHearts(amount);
+    }
+
+    @Override
+    public KnockbackProfile getKnockbackProfile() {
+        return getHandle().getKnockbackProfile();
+    }
+
+    @Override
+    public void setKnockbackProfile(KnockbackProfile profile) {
+        this.getHandle().setKnockbackProfile(profile);
+    }
+
+    @Override
+    public boolean hasCustomKnockback() {
+        return getKnockbackProfile() != null;
     }
 }

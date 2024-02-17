@@ -1,16 +1,10 @@
 package net.minecraft.server;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-import java.util.concurrent.Callable;
-
-// CraftBukkit start
+import co.aikar.timings.SpigotTimings;
+import co.aikar.timings.Timing;
 import com.eatthepath.uuid.FastUUID;
 import dev.cobblesword.nachospigot.Nacho;
 import dev.cobblesword.nachospigot.commons.Constants;
-import dev.cobblesword.nachospigot.knockback.KnockbackProfile;
 import me.elier.nachospigot.config.NachoConfig;
 import org.apache.logging.log4j.LogManager;
 import org.bukkit.Bukkit;
@@ -18,35 +12,37 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.TravelAgent;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Vehicle;
-import co.aikar.timings.SpigotTimings; // Spigot
-import co.aikar.timings.Timing; // Spigot
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
+import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.painting.PaintingBreakByEntityEvent;
 import org.bukkit.event.vehicle.VehicleBlockCollisionEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.plugin.PluginManager;
-// CraftBukkit end
-
-// PaperSpigot start
 import org.spigotmc.event.entity.EntityDismountEvent;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.Callable;
 // PaperSpigot end
 
 public abstract class Entity implements ICommandListener {
 
     // CraftBukkit start
     private static final int CURRENT_LEVEL = 2;
+
     static boolean isLevelAtLeast(NBTTagCompound tag, int level) {
         return tag.hasKey("Bukkit.updateLevel") && tag.getInt("Bukkit.updateLevel") >= level;
     }
@@ -113,6 +109,7 @@ public abstract class Entity implements ICommandListener {
     private double ar;
     private double as;
     public boolean ad;
+
     // PaperSpigot start - EAR: Fix bug with teleporting entities
     public boolean isAddedToChunk() {
         int chunkX = MathHelper.floor(locX / 16.0D);
@@ -121,6 +118,7 @@ public abstract class Entity implements ICommandListener {
 
         return ad && this.chunkX == chunkX && this.chunkY == chunkY || this.chunkZ == chunkZ; // Nacho - deobfuscate chunkX, chunkY, chunkZ
     }
+
     public int chunkX; // Nacho - deobfuscate
     public int chunkY; // Nacho - deobfuscate
     public int chunkZ; // Nacho - deobfuscate
@@ -146,6 +144,7 @@ public abstract class Entity implements ICommandListener {
 
     public static Random SHARED_RANDOM = new Random() {
         private boolean locked = false;
+
         @Override
         public synchronized void setSeed(long seed) {
             if (locked) {
@@ -163,14 +162,16 @@ public abstract class Entity implements ICommandListener {
     public final boolean defaultActivationState;
     public long activatedTick = Integer.MIN_VALUE;
     public boolean fromMobSpawner;
-    public void inactiveTick() { }
+
+    public void inactiveTick() {
+    }
     // Spigot end
 
     // Migot start
     private boolean isInLava;
     private int lastLavaCheck = Integer.MIN_VALUE;
     // Migot end
-	
+
     public int getId() {
         return this.id;
     }
@@ -484,14 +485,16 @@ public abstract class Entity implements ICommandListener {
 
     public void move(double d0, double d1, double d2) {
         // Check if we're moving
-        if (d0 == 0 && d1 == 0 && d2 == 0 && this.vehicle == null && this.passenger == null) { return; }
+        if (d0 == 0 && d1 == 0 && d2 == 0 && this.vehicle == null && this.passenger == null) {
+            return;
+        }
         if (this.loadChunks) loadChunks(); // PaperSpigot - Load chunks
         if (this.noclip) {
             this.a(this.getBoundingBox().c(d0, d1, d2));
             this.recalcPosition();
         } else {
             // [Nacho-0019] :: We must move a meaningful amount of distance to tick collisions
-            if(d0 * d0 + d1 * d1 + d2 * d2 < 0.0001D) return;
+            if (d0 * d0 + d1 * d1 + d2 * d2 < 0.0001D) return;
 
             // IonSpigot start - Movement Cache
             this.lastMotX = this.motX;
@@ -602,16 +605,18 @@ public abstract class Entity implements ICommandListener {
             AxisAlignedBB axisalignedbb2;
             Iterator<AxisAlignedBB> iterator1;
 
-            if(this.world.tacoSpigotConfig.fixEastWest && Math.abs(d0) > Math.abs(d2)) { //TacoSpigot - fix east/west cannoning by calculating the z movement before x if the x velocity is greater
-            if(axisScan) list = this.world.getCubes(this, this.getBoundingBox().a(0, 0, d2)); // TacoSpigot - get z axis blocks
+            if (this.world.tacoSpigotConfig.fixEastWest && Math.abs(d0) > Math.abs(d2)) { //TacoSpigot - fix east/west cannoning by calculating the z movement before x if the x velocity is greater
+                if (axisScan)
+                    list = this.world.getCubes(this, this.getBoundingBox().a(0, 0, d2)); // TacoSpigot - get z axis blocks
 
-            for (iterator1 = list.iterator(); iterator1.hasNext(); d2 = axisalignedbb2.c(this.getBoundingBox(), d2)) {
-                axisalignedbb2 = (AxisAlignedBB) iterator1.next();
-            }
+                for (iterator1 = list.iterator(); iterator1.hasNext(); d2 = axisalignedbb2.c(this.getBoundingBox(), d2)) {
+                    axisalignedbb2 = (AxisAlignedBB) iterator1.next();
+                }
 
                 this.a(this.getBoundingBox().c(0.0D, 0.0D, d2));
 
-                if(axisScan) list = this.world.getCubes(this, this.getBoundingBox().a(d0, 0, 0)); // TacoSpigot - get x axis blocks
+                if (axisScan)
+                    list = this.world.getCubes(this, this.getBoundingBox().a(d0, 0, 0)); // TacoSpigot - get x axis blocks
 
                 for (iterator1 = list.iterator(); iterator1.hasNext(); d0 = axisalignedbb2.a(this.getBoundingBox(), d0)) {
                     axisalignedbb2 = iterator1.next();
@@ -620,21 +625,23 @@ public abstract class Entity implements ICommandListener {
                 this.a(this.getBoundingBox().c(d0, 0.0D, 0.0D));
 
             } else {
-            if(axisScan) list = this.world.getCubes(this, this.getBoundingBox().a(d0, 0, 0)); // TacoSpigot - get x axis blocks
+                if (axisScan)
+                    list = this.world.getCubes(this, this.getBoundingBox().a(d0, 0, 0)); // TacoSpigot - get x axis blocks
 
-            for (iterator1 = list.iterator(); iterator1.hasNext(); d0 = axisalignedbb2.a(this.getBoundingBox(), d0)) {
-                axisalignedbb2 = iterator1.next();
-            }
+                for (iterator1 = list.iterator(); iterator1.hasNext(); d0 = axisalignedbb2.a(this.getBoundingBox(), d0)) {
+                    axisalignedbb2 = iterator1.next();
+                }
 
-            this.a(this.getBoundingBox().c(d0, 0.0D, 0.0D));
+                this.a(this.getBoundingBox().c(d0, 0.0D, 0.0D));
 
-            if(axisScan) list = this.world.getCubes(this, this.getBoundingBox().a(0, 0, d2)); // TacoSpigot - get z axis blocks
+                if (axisScan)
+                    list = this.world.getCubes(this, this.getBoundingBox().a(0, 0, d2)); // TacoSpigot - get z axis blocks
 
-            for (iterator1 = list.iterator(); iterator1.hasNext(); d2 = axisalignedbb2.c(this.getBoundingBox(), d2)) {
-                axisalignedbb2 = iterator1.next();
-            }
+                for (iterator1 = list.iterator(); iterator1.hasNext(); d2 = axisalignedbb2.c(this.getBoundingBox(), d2)) {
+                    axisalignedbb2 = iterator1.next();
+                }
 
-            this.a(this.getBoundingBox().c(0.0D, 0.0D, d2));
+                this.a(this.getBoundingBox().c(0.0D, 0.0D, d2));
             }
 
             if (this.S > 0.0F && flag1 && (d6 != d0 || d8 != d2)) {
@@ -881,14 +888,10 @@ public abstract class Entity implements ICommandListener {
         BlockPosition blockposition = new BlockPosition(this.getBoundingBox().a + 0.001D, this.getBoundingBox().b + 0.001D, this.getBoundingBox().c + 0.001D);
         BlockPosition blockposition1 = new BlockPosition(this.getBoundingBox().d - 0.001D, this.getBoundingBox().e - 0.001D, this.getBoundingBox().f - 0.001D);
 
-        if (this.world.areChunksLoadedBetween(blockposition, blockposition1))
-        {
-            for (int x = blockposition.getX(); x <= blockposition1.getX(); ++x)
-            {
-                for (int y = blockposition.getY(); y <= blockposition1.getY(); ++y)
-                {
-                    for (int z = blockposition.getZ(); z <= blockposition1.getZ(); ++z)
-                    {
+        if (this.world.areChunksLoadedBetween(blockposition, blockposition1)) {
+            for (int x = blockposition.getX(); x <= blockposition1.getX(); ++x) {
+                for (int y = blockposition.getY(); y <= blockposition1.getY(); ++y) {
+                    for (int z = blockposition.getZ(); z <= blockposition1.getZ(); ++z) {
 
                         BlockPosition blockposition2 = new BlockPosition(x, y, z);
                         IBlockData iblockdata = this.world.getType(x, y, z);
@@ -1047,7 +1050,7 @@ public abstract class Entity implements ICommandListener {
         Block block = iblockdata.getBlock();
 
         if (block.b() != -1) {
-            this.world.addParticle(EnumParticle.BLOCK_CRACK, this.locX + ((double) this.random.nextFloat() - 0.5D) * (double) this.width, this.getBoundingBox().b + 0.1D, this.locZ + ((double) this.random.nextFloat() - 0.5D) * (double) this.width, -this.motX * 4.0D, 1.5D, -this.motZ * 4.0D, new int[] { Block.getCombinedId(iblockdata)});
+            this.world.addParticle(EnumParticle.BLOCK_CRACK, this.locX + ((double) this.random.nextFloat() - 0.5D) * (double) this.width, this.getBoundingBox().b + 0.1D, this.locZ + ((double) this.random.nextFloat() - 0.5D) * (double) this.width, -this.motX * 4.0D, 1.5D, -this.motZ * 4.0D, new int[]{Block.getCombinedId(iblockdata)});
         }
 
     }
@@ -1075,14 +1078,14 @@ public abstract class Entity implements ICommandListener {
 
     public boolean ab() {
         // Migot start - Check for lava only once per tick
-	// return this.world.a(this.getBoundingBox().grow(-0.10000000149011612D, -0.4000000059604645D, -0.10000000149011612D), Material.LAVA);
-	int currentTick = MinecraftServer.currentTick;
+        // return this.world.a(this.getBoundingBox().grow(-0.10000000149011612D, -0.4000000059604645D, -0.10000000149011612D), Material.LAVA);
+        int currentTick = MinecraftServer.currentTick;
         if (this.lastLavaCheck != currentTick) {
             this.lastLavaCheck = currentTick;
             this.isInLava = this.world.a(this.getBoundingBox().grow(-0.10000000149011612D, -0.4000000059604645D, -0.10000000149011612D), Material.LAVA);
         }
         return this.isInLava;
-	// Migot end
+        // Migot end
     }
 
     public void a(float f, float f1, float f2) {
@@ -1202,20 +1205,20 @@ public abstract class Entity implements ICommandListener {
                     ((EntityPlayer) entity).getBukkitEntity()
             );*/
 
-        	EntityPlayer entityPlayer = (EntityPlayer) entity;
+            EntityPlayer entityPlayer = (EntityPlayer) entity;
             EntityPlayer player = (EntityPlayer) this;
-        	
-        	Location loc;
-        	if (entityPlayer.playerConnection.getClass().equals(PlayerConnection.class)
+
+            Location loc;
+            if (entityPlayer.playerConnection.getClass().equals(PlayerConnection.class)
                     && player.playerConnection.getClass().equals(PlayerConnection.class)) {
                 loc = Nacho.get().getLagCompensator().getHistoryLocation(
                         entityPlayer.getBukkitEntity(),
                         player.ping
                 );
-        	} else {
-        		loc = entityPlayer.getBukkitEntity().getLocation();
-        	}
-                // Nacho end
+            } else {
+                loc = entityPlayer.getBukkitEntity().getLocation();
+            }
+            // Nacho end
 
             double d0 = this.locX - loc.getX();
             double d1 = this.locY - loc.getY();
@@ -1231,9 +1234,11 @@ public abstract class Entity implements ICommandListener {
         }
     }
 
-    public void d(EntityHuman entityhuman) {}
+    public void d(EntityHuman entityhuman) {
+    }
 
     int numCollisions = 0; // Spigot
+
     public void collide(Entity entity) {
         if (entity.passenger != this && entity.vehicle != this) {
             if (!entity.noclip && !this.noclip) {
@@ -1318,10 +1323,12 @@ public abstract class Entity implements ICommandListener {
         return false;
     }
 
-    public void b(Entity entity, int i) {}
+    public void b(Entity entity, int i) {
+    }
 
     public boolean c(NBTTagCompound nbttagcompound) {
-        if(this instanceof EntityFireworks || this instanceof EntityArrow)return false; // YAPFA - Don't save arrows or fireworks
+        if (this instanceof EntityFireworks || this instanceof EntityArrow)
+            return false; // YAPFA - Don't save arrows or fireworks
         String s = this.ag();
 
         if (!this.dead && s != null) {
@@ -1347,8 +1354,8 @@ public abstract class Entity implements ICommandListener {
 
     public void e(NBTTagCompound nbttagcompound) {
         try {
-            nbttagcompound.set("Pos", this.a(new double[] { this.locX, this.locY, this.locZ}));
-            nbttagcompound.set("Motion", this.a(new double[] { this.motX, this.motY, this.motZ}));
+            nbttagcompound.set("Pos", this.a(new double[]{this.locX, this.locY, this.locZ}));
+            nbttagcompound.set("Motion", this.a(new double[]{this.motX, this.motY, this.motZ}));
 
             // CraftBukkit start - Checking for NaN pitch/yaw and resetting to zero
             // TODO: make sure this is the best way to address this.
@@ -1361,7 +1368,7 @@ public abstract class Entity implements ICommandListener {
             }
             // CraftBukkit end
 
-            nbttagcompound.set("Rotation", this.a(new float[] { this.yaw, this.pitch}));
+            nbttagcompound.set("Rotation", this.a(new float[]{this.yaw, this.pitch}));
             nbttagcompound.setFloat("FallDistance", this.fallDistance);
             nbttagcompound.setShort("Fire", (short) this.fireTicks);
             nbttagcompound.setShort("Air", (short) this.getAirTicks());
@@ -1513,7 +1520,7 @@ public abstract class Entity implements ICommandListener {
                     bworld = ((org.bukkit.craftbukkit.CraftServer) server).getServer().getWorldServer(entityPlayer.dimension).getWorld();
                 }
 
-                spawnIn(bworld == null? null : ((CraftWorld) bworld).getHandle());
+                spawnIn(bworld == null ? null : ((CraftWorld) bworld).getHandle());
             }
             // CraftBukkit end
 
@@ -1538,7 +1545,8 @@ public abstract class Entity implements ICommandListener {
 
     protected abstract void b(NBTTagCompound nbttagcompound);
 
-    public void ah() {}
+    public void ah() {
+    }
 
     protected NBTTagList a(double... adouble) {
         NBTTagList nbttaglist = new NBTTagList();
@@ -1700,7 +1708,9 @@ public abstract class Entity implements ICommandListener {
     // CraftBukkit start
     protected CraftEntity bukkitEntity;
 
-    public boolean hasBukkitEntity() { return bukkitEntity != null; }
+    public boolean hasBukkitEntity() {
+        return bukkitEntity != null;
+    }
 
     public CraftEntity getBukkitEntity() {
         if (bukkitEntity == null) {
@@ -1769,12 +1779,10 @@ public abstract class Entity implements ICommandListener {
             }
             // CraftBukkit end
             // Spigot Start
-            if ( entity.world.isChunkLoaded( (int) entity.locX >> 4, (int) entity.locZ >> 4, true ) )
-            {
-                org.spigotmc.event.entity.EntityMountEvent event = new org.spigotmc.event.entity.EntityMountEvent( this.getBukkitEntity(), entity.getBukkitEntity() );
-                pluginManager.callEvent( event );
-                if ( event.isCancelled() )
-                {
+            if (entity.world.isChunkLoaded((int) entity.locX >> 4, (int) entity.locZ >> 4, true)) {
+                org.spigotmc.event.entity.EntityMountEvent event = new org.spigotmc.event.entity.EntityMountEvent(this.getBukkitEntity(), entity.getBukkitEntity());
+                pluginManager.callEvent(event);
+                if (event.isCancelled()) {
                     return;
                 }
             }
@@ -1834,7 +1842,8 @@ public abstract class Entity implements ICommandListener {
         return null;
     }
 
-    public void setEquipment(int i, ItemStack itemstack) {}
+    public void setEquipment(int i, ItemStack itemstack) {
+    }
 
     public boolean isBurning() {
         boolean flag = this.world != null && this.world.isClientSide;
@@ -1863,6 +1872,7 @@ public abstract class Entity implements ICommandListener {
     public void setExtraKnockback(boolean flag) {
         this.extraKnockback = flag;
     }
+
     public boolean isExtraKnockback() {
         return this.extraKnockback;
     }
@@ -1954,7 +1964,8 @@ public abstract class Entity implements ICommandListener {
 
     }
 
-    public void a(EntityLiving entityliving) {}
+    public void a(EntityLiving entityliving) {
+    }
 
     protected boolean j(double d0, double d1, double d2) {
         BlockPosition blockposition = new BlockPosition(d0, d1, d2);
@@ -2051,9 +2062,11 @@ public abstract class Entity implements ICommandListener {
         return 0.0F;
     }
 
-    public void f(float f) {}
+    public void f(float f) {
+    }
 
-    public void g(float f) {}
+    public void g(float f) {
+    }
 
     public boolean aD() {
         return true;
@@ -2064,7 +2077,7 @@ public abstract class Entity implements ICommandListener {
     }
 
     public String toString() {
-        return String.format("%s[\'%s\'/%d, l=\'%s\', x=%.2f, y=%.2f, z=%.2f]", new Object[] { this.getClass().getSimpleName(), this.getName(), Integer.valueOf(this.id), this.world == null ? "~NULL~" : this.world.getWorldData().getName(), Double.valueOf(this.locX), Double.valueOf(this.locY), Double.valueOf(this.locZ)});
+        return String.format("%s[\'%s\'/%d, l=\'%s\', x=%.2f, y=%.2f, z=%.2f]", new Object[]{this.getClass().getSimpleName(), this.getName(), Integer.valueOf(this.id), this.world == null ? "~NULL~" : this.world.getWorldData().getName(), Double.valueOf(this.locX), Double.valueOf(this.locY), Double.valueOf(this.locZ)});
     }
 
     public boolean isInvulnerable(DamageSource damagesource) {
@@ -2164,7 +2177,7 @@ public abstract class Entity implements ICommandListener {
                 entity.bukkitEntity = this.getBukkitEntity();
 
                 if (this instanceof EntityInsentient) {
-                    ((EntityInsentient)this).unleash(true, false); // Unleash to prevent duping of leads.
+                    ((EntityInsentient) this).unleash(true, false); // Unleash to prevent duping of leads.
                 }
                 // CraftBukkit end
             }
@@ -2221,9 +2234,9 @@ public abstract class Entity implements ICommandListener {
                 return this.a();
             }
         });
-        crashreportsystemdetails.a("Entity\'s Exact location", (Object) String.format("%.2f, %.2f, %.2f", new Object[] { Double.valueOf(this.locX), Double.valueOf(this.locY), Double.valueOf(this.locZ)}));
+        crashreportsystemdetails.a("Entity\'s Exact location", (Object) String.format("%.2f, %.2f, %.2f", new Object[]{Double.valueOf(this.locX), Double.valueOf(this.locY), Double.valueOf(this.locZ)}));
         crashreportsystemdetails.a("Entity\'s Block location", (Object) CrashReportSystemDetails.a((double) MathHelper.floor(this.locX), (double) MathHelper.floor(this.locY), (double) MathHelper.floor(this.locZ)));
-        crashreportsystemdetails.a("Entity\'s Momentum", (Object) String.format("%.2f, %.2f, %.2f", new Object[] { Double.valueOf(this.motX), Double.valueOf(this.motY), Double.valueOf(this.motZ)}));
+        crashreportsystemdetails.a("Entity\'s Momentum", (Object) String.format("%.2f, %.2f, %.2f", new Object[]{Double.valueOf(this.motX), Double.valueOf(this.motY), Double.valueOf(this.motZ)}));
         crashreportsystemdetails.a("Entity\'s Rider", new Callable() {
             public String a() throws Exception {
                 return Entity.this.passenger.toString();
@@ -2289,7 +2302,8 @@ public abstract class Entity implements ICommandListener {
         this.setPositionRotation(d0, d1, d2, this.yaw, this.pitch);
     }
 
-    public void i(int i) {}
+    public void i(int i) {
+    }
 
     public EnumDirection getDirection() {
         return EnumDirection.fromType2(MathHelper.floor((double) (this.yaw * 4.0F / 360.0F) + 0.5D) & 3);
@@ -2355,7 +2369,8 @@ public abstract class Entity implements ICommandListener {
         return false;
     }
 
-    public void sendMessage(IChatBaseComponent ichatbasecomponent) {}
+    public void sendMessage(IChatBaseComponent ichatbasecomponent) {
+    }
 
     public boolean a(int i, String s) {
         return true;
@@ -2413,13 +2428,4 @@ public abstract class Entity implements ICommandListener {
         EnchantmentManager.b(entityliving, entity);
     }
 
-    private KnockbackProfile knockbackProfile;
-
-    public KnockbackProfile getKnockbackProfile() {
-        return knockbackProfile;
-    }
-
-    public void setKnockbackProfile(KnockbackProfile profile) {
-        this.knockbackProfile = profile;
-    }
 }

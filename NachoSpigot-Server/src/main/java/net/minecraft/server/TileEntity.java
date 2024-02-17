@@ -17,7 +17,7 @@ public abstract class TileEntity {
     private static Map<String, Class<? extends TileEntity>> f = Maps.newHashMap();
     private static Map<Class<? extends TileEntity>, String> g = Maps.newHashMap();
     protected World world;
-    protected BlockPosition position;
+    public BlockPosition position;
     protected boolean d;
     private int h;
     protected Block e;

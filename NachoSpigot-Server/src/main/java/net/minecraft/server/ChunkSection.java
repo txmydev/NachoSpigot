@@ -1,5 +1,7 @@
 package net.minecraft.server;
 
+import txmy.dev.chunk.ChunkSectionSnapshot;
+
 public class ChunkSection {
 
     private int yPos;
@@ -148,4 +150,37 @@ public class ChunkSection {
     public void b(NibbleArray nibblearray) {
         this.skyLight = nibblearray;
     }
+    private char[] clone(char[] chars) {
+        if (chars != null)
+            return chars.clone();
+        return null;
+    }
+
+    private NibbleArray clone(NibbleArray array) {
+        if (array != null)
+            return array.clone();
+        return null;
+    }
+
+    public ChunkSectionSnapshot createSnapshot() {
+        return new ChunkSectionSnapshot(
+                yPos,
+                nonEmptyBlockCount,
+                tickingBlockCount,
+                clone(blockIds),
+                clone(emittedLight),
+                clone(skyLight),
+                isDirty);
+    }
+
+    public void restoreSnapshot(ChunkSectionSnapshot snap) {
+        yPos = snap.getYPos();
+        nonEmptyBlockCount = snap.getNonEmptyBlockCount();
+        tickingBlockCount = snap.getTickingBlockCount();
+        blockIds = clone(snap.getBlockIds());
+        emittedLight = clone(snap.getEmittedLight());
+        skyLight = clone(snap.getSkyLight());
+        isDirty = snap.isDirty();
+    }
+
 }
