@@ -6,7 +6,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.inventory.CraftInventoryView; // CraftBukkit
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import txmy.dev.event.AnvilPreRepairEvent;
 
 public class ContainerAnvil extends Container {
 
@@ -298,6 +301,16 @@ public class ContainerAnvil extends Container {
                 itemstack1.setRepairCost(k);
                 EnchantmentManager.a(map, itemstack1);
             }
+
+            AnvilPreRepairEvent event = new AnvilPreRepairEvent(
+                    this.bukkitEntity,
+                    this.bukkitEntity.getTopInventory(),
+                    CraftItemStack.asBukkitCopy(itemstack1),
+                    this.a
+            );
+
+            Bukkit.getPluginManager().callEvent(event);
+            if (itemstack1 != null && event.getCost() != itemstack1.getRepairCost()) this.a = event.getCost();
 
             this.g.setItem(0, itemstack1);
             this.b();
