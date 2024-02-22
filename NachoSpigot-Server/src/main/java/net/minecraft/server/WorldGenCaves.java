@@ -249,6 +249,11 @@ public class WorldGenCaves extends WorldGenBase {
          var7 = 0;
       }
 
+      int spawnRadius = c.generatorConfig.spawnBiomeRadius >> 4;
+
+      if (!c.generatorConfig.spawnCaves && ( Math.abs(var2) <= spawnRadius &&  Math.abs(var3) <= spawnRadius))
+         var7 = 0;
+
       for(int var8 = 0; var8 < var7; ++var8) {
          double var9 = (double)(var2 * 16 + this.b.nextInt(16));
          double var11 = (double)this.b.nextInt(this.b.nextInt(120) + 8);

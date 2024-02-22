@@ -49,6 +49,7 @@ public class GeneratorConfig {
     public BiomeBase spawnBiome;
     public int spawnBiomeRadius;
     public boolean spawnBiomeRivers;
+    public boolean spawnCaves;
 
     public float cavesMultiplier;
 
@@ -126,6 +127,7 @@ public class GeneratorConfig {
         spawnBiome = spawnBiomes.get(random);
         spawnBiomeRadius = getInt("spawn.radius", 0);
         spawnBiomeRivers = getBoolean("spawn.rivers", false);
+        spawnCaves = getBoolean("spawn.generate-caves", false);
 
         cavesMultiplier = (float) getDouble("caves.multiplier", 1.0);
         mineshaftMultiplier = (float) getDouble("mineshaft.multiplier", 1.0);
