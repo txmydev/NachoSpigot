@@ -63,7 +63,7 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
 // PaperSpigot start
 import com.destroystokyo.paper.Title;
-import txmy.dev.events.PlayerHealthChangeEvent;
+import txmy.dev.event.PlayerHealthChangeEvent;
 import txmy.dev.language.Language;
 import txmy.dev.language.LanguageEnum;
 import txmy.dev.language.LanguageManager;

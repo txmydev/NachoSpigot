@@ -59,7 +59,8 @@ public class VersionCommand extends BukkitCommand {
 
         if (args.length == 0) {
             //sender.sendMessage("This server is running " + Bukkit.getName() + " version " + Bukkit.getVersion() + " (Implementing API version " + Bukkit.getBukkitVersion() + ")"); // Paper - moved to setVersionMessage
-            sendVersion(sender);
+            // sendVersion(sender);
+            sender.sendMessage("This server is running a fork of " + ChatColor.GREEN + "NachoSpigot " + ChatColor.WHITE + "customized by " + ChatColor.GREEN + "txmy " + ChatColor.BLUE + "(tomimcn on Discord)");
         } else {
             StringBuilder name = new StringBuilder();
 

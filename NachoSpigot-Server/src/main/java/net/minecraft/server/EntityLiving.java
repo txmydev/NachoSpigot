@@ -83,13 +83,14 @@ public abstract class EntityLiving extends Entity {
     public int expToDrop;
     public int maxAirTicks = 300;
     ArrayList<org.bukkit.inventory.ItemStack> drops = null;
+
     // CraftBukkit end
     // Spigot start
-    public void inactiveTick()
-    {
+    public void inactiveTick() {
         super.inactiveTick();
         ++this.ticksFarFromPlayer; // Above all the floats
     }
+
     // Spigot end
     private int tick;
 
@@ -145,9 +146,9 @@ public abstract class EntityLiving extends Entity {
 
                 // CraftBukkit start - visiblity api
                 if (this instanceof EntityPlayer) {
-                    ((WorldServer) this.world).sendParticles((EntityPlayer) this, EnumParticle.BLOCK_DUST, false, this.locX, this.locY, this.locZ, i, 0.0D, 0.0D, 0.0D, 0.15000000596046448D, new int[] { Block.getCombinedId(iblockdata)});
+                    ((WorldServer) this.world).sendParticles((EntityPlayer) this, EnumParticle.BLOCK_DUST, false, this.locX, this.locY, this.locZ, i, 0.0D, 0.0D, 0.0D, 0.15000000596046448D, new int[]{Block.getCombinedId(iblockdata)});
                 } else {
-                    ((WorldServer) this.world).a(EnumParticle.BLOCK_DUST, this.locX, this.locY, this.locZ, i, 0.0D, 0.0D, 0.0D, 0.15000000596046448D, new int[] { Block.getCombinedId(iblockdata)});
+                    ((WorldServer) this.world).a(EnumParticle.BLOCK_DUST, this.locX, this.locY, this.locZ, i, 0.0D, 0.0D, 0.0D, 0.15000000596046448D, new int[]{Block.getCombinedId(iblockdata)});
                 }
                 // CraftBukkit end
             }
@@ -575,7 +576,7 @@ public abstract class EntityLiving extends Entity {
     }
 
     public void addEffect(MobEffect mobeffect) {
-        org.spigotmc.AsyncCatcher.catchOp( "effect add"); // Spigot
+        org.spigotmc.AsyncCatcher.catchOp("effect add"); // Spigot
         // CraftBukkit start
         if (isTickingEffects) {
             effectsToProcess.add(mobeffect);
@@ -755,10 +756,10 @@ public abstract class EntityLiving extends Entity {
                 }
 
                 // CraftBukkit start
-                if(this instanceof EntityAnimal){
-                    ((EntityAnimal)this).cq();
-                    if(this instanceof EntityTameableAnimal){
-                        ((EntityTameableAnimal)this).getGoalSit().setSitting(false);
+                if (this instanceof EntityAnimal) {
+                    ((EntityAnimal) this).cq();
+                    if (this instanceof EntityTameableAnimal) {
+                        ((EntityTameableAnimal) this).getGoalSit().setSitting(false);
                     }
                 }
                 // CraftBukkit end
@@ -787,7 +788,7 @@ public abstract class EntityLiving extends Entity {
                 // PaperSpigot start - Disable explosion knockback
                 boolean knockbackCancelled = false;
                 if (flag && !(knockbackCancelled = world.paperSpigotConfig.disableExplosionKnockback && damagesource.isExplosion() && this instanceof EntityHuman)) {
-                // PaperSpigot end
+                    // PaperSpigot end
                     this.world.broadcastEntityEffect(this, (byte) 2);
                     if (damagesource != DamageSource.DROWN) {
                         this.ac();
@@ -846,7 +847,7 @@ public abstract class EntityLiving extends Entity {
             vec3d1 = vec3d1.a(-this.pitch * 3.1415927F / 180.0F);
             vec3d1 = vec3d1.b(-this.yaw * 3.1415927F / 180.0F);
             vec3d1 = vec3d1.add(this.locX, this.locY + (double) this.getHeadHeight(), this.locZ);
-            this.world.addParticle(EnumParticle.ITEM_CRACK, vec3d1.a, vec3d1.b, vec3d1.c, vec3d.a, vec3d.b + 0.05D, vec3d.c, new int[] { Item.getId(itemstack.getItem())});
+            this.world.addParticle(EnumParticle.ITEM_CRACK, vec3d1.a, vec3d1.b, vec3d1.c, vec3d.a, vec3d.b + 0.05D, vec3d.c, new int[]{Item.getId(itemstack.getItem())});
         }
 
     }
@@ -892,10 +893,11 @@ public abstract class EntityLiving extends Entity {
         this.world.broadcastEntityEffect(this, (byte) 3);
     }
 
-    protected void dropEquipment(boolean flag, int i) {}
-    
+    protected void dropEquipment(boolean flag, int i) {
+    }
+
     public void a(Entity entity, float f, double d0, double d1) {
-          a(d0, d1, null);
+        a(d0, d1, null);
     }
 
     public void a(double x, double z, DamageSource source) {
@@ -920,9 +922,11 @@ public abstract class EntityLiving extends Entity {
         return "game.neutral.die";
     }
 
-    protected void getRareDrop() {}
+    protected void getRareDrop() {
+    }
 
-    protected void dropDeathLoot(boolean flag, int i) {}
+    protected void dropDeathLoot(boolean flag, int i) {
+    }
 
     public boolean k_() {
         int i = MathHelper.floor(this.locX);
@@ -987,7 +991,8 @@ public abstract class EntityLiving extends Entity {
         return i;
     }
 
-    protected void damageArmor(float f) {}
+    protected void damageArmor(float f) {
+    }
 
     protected float applyArmorModifier(DamageSource damagesource, float f) {
         if (!damagesource.ignoresArmor()) {
@@ -1038,7 +1043,7 @@ public abstract class EntityLiving extends Entity {
 
     // CraftBukkit start
     protected boolean d(final DamageSource damagesource, float f) { // void -> boolean, add final
-       if (!this.isInvulnerable(damagesource)) {
+        if (!this.isInvulnerable(damagesource)) {
             final boolean human = this instanceof EntityHuman;
             float originalDamage = f;
             Function<Double, Double> hardHat = new Function<Double, Double>() {
@@ -1454,8 +1459,7 @@ public abstract class EntityLiving extends Entity {
 
     public void t_() {
         super.t_();
-        if (!this.world.isClientSide)
-        {
+        if (!this.world.isClientSide) {
             int i = this.getArrowsStuck(); // Nacho - deobfuscate getArrowsStuck
 
             if (i > 0) {
@@ -1470,13 +1474,11 @@ public abstract class EntityLiving extends Entity {
             }
 
             this.tick++;
-            for (int j = 0; j < 5; ++j)
-            {
+            for (int j = 0; j < 5; ++j) {
                 ItemStack itemstack = this.h[j];
                 ItemStack itemstack1 = this.getEquipment(j);
 
-                if (!ItemStack.fastMatches(itemstack1, itemstack) || (this.tick % 20 == 0 && !ItemStack.matches(itemstack1, itemstack)))
-                {
+                if (!ItemStack.fastMatches(itemstack1, itemstack) || (this.tick % 20 == 0 && !ItemStack.matches(itemstack1, itemstack))) {
                     ((WorldServer) this.world).getTracker().a(this, new PacketPlayOutEntityEquipment(this.getId(), j, itemstack1));
                     if (itemstack != null) {
                         this.c.a(itemstack.B());
@@ -1665,7 +1667,8 @@ public abstract class EntityLiving extends Entity {
         this.world.methodProfiler.b();
     }
 
-    protected void doTick() {}
+    protected void doTick() {
+    }
 
     protected void bL() {
         // IonSpigot start - Optimise Entity Collisions
@@ -1676,7 +1679,9 @@ public abstract class EntityLiving extends Entity {
         if (this.ad() && !list.isEmpty()) { // Spigot: Add this.ad() condition
             numCollisions -= world.spigotConfig.maxCollisionsPerEntity; // Spigot
             for (int i = 0; i < list.size(); ++i) {
-                if (numCollisions > world.spigotConfig.maxCollisionsPerEntity) { break; } // Spigot
+                if (numCollisions > world.spigotConfig.maxCollisionsPerEntity) {
+                    break;
+                } // Spigot
                 Entity entity = (Entity) list.get(i);
 
                 // TODO better check now?
@@ -1845,7 +1850,8 @@ public abstract class EntityLiving extends Entity {
     }
 
     public ScoreboardTeamBase getScoreboardTeam() {
-        if (!this.world.tacoSpigotConfig.nonPlayerEntitiesOnScoreboards && !(this instanceof EntityHuman)) return null; // TacoSpigot
+        if (!this.world.tacoSpigotConfig.nonPlayerEntitiesOnScoreboards && !(this instanceof EntityHuman))
+            return null; // TacoSpigot
         return this.world.getScoreboard().getPlayerTeam(this.getUniqueID().toString());
     }
 
@@ -1857,9 +1863,11 @@ public abstract class EntityLiving extends Entity {
         return this.getScoreboardTeam() != null ? this.getScoreboardTeam().isAlly(scoreboardteambase) : false;
     }
 
-    public void enterCombat() {}
+    public void enterCombat() {
+    }
 
-    public void exitCombat() {}
+    public void exitCombat() {
+    }
 
     protected void bP() {
         this.updateEffects = true;

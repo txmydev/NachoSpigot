@@ -1,0 +1,17 @@
+enabled: false
+
+# Available: SFTP
+method: SFTP
+address: 127.0.0.1
+port: 2022
+username: user
+password: pwd
+auth: false
+
+# which folders should the updater check when connected to the sftp
+lookup-folder: "jars"
+
+# if true, everything in the folder will be downloaded except the folders.
+download-everything: false
+# if download-everything is false, specify which files you want to download
+files-to-download: []

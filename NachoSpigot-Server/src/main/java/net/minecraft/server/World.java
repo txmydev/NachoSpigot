@@ -200,7 +200,7 @@ public abstract class World implements IBlockAccess {
         this.paperSpigotConfig = new PaperWorldConfig( worlddata.getName() ); // PaperSpigot
         this.tacoSpigotConfig = new net.techcable.tacospigot.TacoSpigotWorldConfig(worlddata.getName()); // TacoSpigot
         this.nachoSpigotConfig = new NachoWorldConfig(worlddata.getName()); // NachoSpigot
-        this.generatorConfig = new GeneratorConfig(worlddata.getName()); // MineHQ
+        this.generatorConfig = new GeneratorConfig(worlddata.getName()); // txmy (MineHQ)
 
         this.generator = gen;
         this.world = new CraftWorld((WorldServer) this, gen, env);

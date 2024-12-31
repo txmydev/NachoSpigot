@@ -24,7 +24,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.util.Vector;
-import txmy.dev.events.PlayerHealthChangeEvent;
+import txmy.dev.event.PlayerHealthChangeEvent;
 import txmy.dev.knockback.KnockbackModule;
 import txmy.dev.knockback.KnockbackProfile;
 // CraftBukkit end
@@ -65,7 +65,6 @@ public abstract class EntityHuman extends EntityLiving {
     protected float bF = 0.02F;
     private int i;
 
-    private final GameProfile realProfile;
     private GameProfile bH;
     private boolean bI = false;
     public EntityFishingHook hookedFish;
@@ -90,7 +89,6 @@ public abstract class EntityHuman extends EntityLiving {
     public EntityHuman(World world, GameProfile gameprofile) {
         super(world);
         this.uniqueID = createPlayerUUID(gameprofile); // Nacho - deobfuscate createPlayerUUID
-        this.realProfile = gameprofile;
         this.bH = gameprofile;
         this.defaultContainer = new ContainerPlayer(this.inventory, !world.isClientSide, this);
         this.activeContainer = this.defaultContainer;
@@ -1237,10 +1235,6 @@ public abstract class EntityHuman extends EntityLiving {
 
     public void setProfile(GameProfile profile) {
         this.bH = profile;
-    }
-
-    public void restoreProfile() {
-        this.bH = realProfile;
     }
 
     public EntityHuman.EnumBedResult a(BlockPosition blockposition) {

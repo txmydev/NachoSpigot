@@ -16,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
 import org.fusesource.jansi.AnsiConsole;
+import txmy.dev.updater.PluginUpdaterHandler;
 
 public class Main {
     public static boolean useJline = true;
@@ -232,6 +233,13 @@ public class Main {
                     Nacho.LOGGER.warn( "Please see http://www.spigotmc.org/wiki/changing-permgen-size/ for more details and more in-depth instructions." );
                 }
                 // Spigot End
+
+                // txmy start - initialize updater
+                Nacho.LOGGER.info("Firing plugin updater check...");
+                PluginUpdaterHandler handler = new PluginUpdaterHandler();
+                handler.check();
+                // txmy end
+
                 Nacho.LOGGER.info("Loading libraries, please wait...");
                 net.techcable.tacospigot.TacoSpigotConfig.init((File) options.valueOf("taco-settings")); // TacoSpigot - load config before we load libraries to allow access while loading
                 MinecraftServer.main(options);

@@ -1,20 +1,19 @@
 package org.bukkit.entity;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
-import txmy.dev.knockback.KnockbackProfile;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Represents a living entity, such as a monster or player
@@ -32,7 +31,7 @@ public interface LivingEntity extends Entity, Damageable, ProjectileSource {
      * Gets the height of the living entity's eyes above its Location.
      *
      * @param ignoreSneaking if set to true, the effects of sneaking will be
-     *     ignored
+     *                       ignored
      * @return height of the living entity's eyes above its location
      */
     public double getEyeHeight(boolean ignoreSneaking);
@@ -51,11 +50,11 @@ public interface LivingEntity extends Entity, Damageable, ProjectileSource {
      * target inclusive.
      *
      * @param transparent HashSet containing all transparent block IDs (set to
-     *     null for only air)
+     *                    null for only air)
      * @param maxDistance this is the maximum distance to scan (may be limited
-     *     by server by at least 100 blocks, no less)
+     *                    by server by at least 100 blocks, no less)
      * @return list containing all blocks along the living entity's line of
-     *     sight
+     * sight
      * @deprecated Magic value
      */
     @Deprecated
@@ -68,11 +67,11 @@ public interface LivingEntity extends Entity, Damageable, ProjectileSource {
      * target inclusive.
      *
      * @param transparent HashSet containing all transparent block Materials (set to
-     *     null for only air)
+     *                    null for only air)
      * @param maxDistance this is the maximum distance to scan (may be limited
-     *     by server by at least 100 blocks, no less)
+     *                    by server by at least 100 blocks, no less)
      * @return list containing all blocks along the living entity's line of
-     *     sight
+     * sight
      */
     public List<Block> getLineOfSight(Set<Material> transparent, int maxDistance);
 
@@ -80,9 +79,9 @@ public interface LivingEntity extends Entity, Damageable, ProjectileSource {
      * Gets the block that the living entity has targeted.
      *
      * @param transparent HashSet containing all transparent block IDs (set to
-     *     null for only air)
+     *                    null for only air)
      * @param maxDistance this is the maximum distance to scan (may be limited
-     *     by server by at least 100 blocks, no less)
+     *                    by server by at least 100 blocks, no less)
      * @return block that the living entity has targeted
      * @deprecated Magic value
      */
@@ -93,9 +92,9 @@ public interface LivingEntity extends Entity, Damageable, ProjectileSource {
      * Gets the block that the living entity has targeted.
      *
      * @param transparent HashSet containing all transparent block Materials (set to
-     *     null for only air)
+     *                    null for only air)
      * @param maxDistance this is the maximum distance to scan (may be limited
-     *     by server by at least 100 blocks, no less)
+     *                    by server by at least 100 blocks, no less)
      * @return block that the living entity has targeted
      */
     public Block getTargetBlock(Set<Material> transparent, int maxDistance);
@@ -106,11 +105,11 @@ public interface LivingEntity extends Entity, Damageable, ProjectileSource {
      * The target block will be the last block in the list.
      *
      * @param transparent HashSet containing all transparent block IDs (set to
-     *     null for only air)
+     *                    null for only air)
      * @param maxDistance this is the maximum distance to scan. This may be
-     *     further limited by the server, but never to less than 100 blocks
+     *                    further limited by the server, but never to less than 100 blocks
      * @return list containing the last 2 blocks along the living entity's
-     *     line of sight
+     * line of sight
      * @deprecated Magic value
      */
     @Deprecated
@@ -122,19 +121,19 @@ public interface LivingEntity extends Entity, Damageable, ProjectileSource {
      * The target block will be the last block in the list.
      *
      * @param transparent HashSet containing all transparent block Materials (set to
-     *     null for only air)
+     *                    null for only air)
      * @param maxDistance this is the maximum distance to scan. This may be
-     *     further limited by the server, but never to less than 100 blocks
+     *                    further limited by the server, but never to less than 100 blocks
      * @return list containing the last 2 blocks along the living entity's
-     *     line of sight
+     * line of sight
      */
     public List<Block> getLastTwoTargetBlocks(Set<Material> transparent, int maxDistance);
 
     /**
      * Throws an egg from the living entity.
      *
-     * @deprecated use launchProjectile(Egg.class) instead
      * @return the egg thrown
+     * @deprecated use launchProjectile(Egg.class) instead
      */
     @Deprecated
     public Egg throwEgg();
@@ -142,8 +141,8 @@ public interface LivingEntity extends Entity, Damageable, ProjectileSource {
     /**
      * Throws a snowball from the living entity.
      *
-     * @deprecated use launchProjectile(Snowball.class) instead
      * @return the snowball thrown
+     * @deprecated use launchProjectile(Snowball.class) instead
      */
     @Deprecated
     public Snowball throwSnowball();
@@ -151,8 +150,8 @@ public interface LivingEntity extends Entity, Damageable, ProjectileSource {
     /**
      * Shoots an arrow from the living entity.
      *
-     * @deprecated use launchProjectile(Arrow.class) instead
      * @return the arrow shot
+     * @deprecated use launchProjectile(Arrow.class) instead
      */
     @Deprecated
     public Arrow shootArrow();
@@ -263,7 +262,7 @@ public interface LivingEntity extends Entity, Damageable, ProjectileSource {
      * PotionEffectType}.
      *
      * @param effect PotionEffect to be added
-     * @param force whether conflicting effects should be removed
+     * @param force  whether conflicting effects should be removed
      * @return whether the effect could be added
      */
     public boolean addPotionEffect(PotionEffect effect, boolean force);
@@ -378,6 +377,7 @@ public interface LivingEntity extends Entity, Damageable, ProjectileSource {
     public boolean setLeashHolder(Entity holder);
 
     // Paper start
+
     /**
      * Get the number of arrows stuck in this entity
      *
@@ -404,12 +404,14 @@ public interface LivingEntity extends Entity, Damageable, ProjectileSource {
 
     /**
      * Heals the entity for the specified amount, with {@link RegainReason#CUSTOM}. If {@code amount} is less than 0, the code will not run. If, after event processing, the amount to heal will make the entity exceed their max health, then their health will be rounded to their max health. Will call {@link EntityRegainHealthEvent}.
+     *
      * @param amount Amount to heal the entity.
      */
     public void heal(float amount);
 
     /**
      * Heals the entity for the specified amount, with the specified reason. If {@code amount} is less than 0, the code will not run. If, after event processing, the amount to heal will make the entity exceed their max health, then their health will be rounded to their max health. Will call {@link EntityRegainHealthEvent}.
+     *
      * @param amount Amount to heal the entity.
      * @param reason Regain reason, included in event call.
      */

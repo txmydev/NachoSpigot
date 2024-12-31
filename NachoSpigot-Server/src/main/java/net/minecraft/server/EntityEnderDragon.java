@@ -43,7 +43,14 @@ public class EntityEnderDragon extends EntityInsentient implements IComplex, IMo
 
     public EntityEnderDragon(World world) {
         super(world);
-        this.children = new EntityComplexPart[] { this.bn = new EntityComplexPart(this, "head", 6.0F, 6.0F), this.bo = new EntityComplexPart(this, "body", 8.0F, 8.0F), this.bp = new EntityComplexPart(this, "tail", 4.0F, 4.0F), this.bq = new EntityComplexPart(this, "tail", 4.0F, 4.0F), this.br = new EntityComplexPart(this, "tail", 4.0F, 4.0F), this.bs = new EntityComplexPart(this, "wing", 4.0F, 4.0F), this.bt = new EntityComplexPart(this, "wing", 4.0F, 4.0F)};
+        this.children = new EntityComplexPart[] {
+                this.bn = new EntityComplexPart(this, "head", 6.0F, 6.0F),
+                this.bo = new EntityComplexPart(this, "body", 8.0F, 8.0F),
+                this.bp = new EntityComplexPart(this, "tail", 4.0F, 4.0F),
+                this.bq = new EntityComplexPart(this, "tail", 4.0F, 4.0F),
+                this.br = new EntityComplexPart(this, "tail", 4.0F, 4.0F),
+                this.bs = new EntityComplexPart(this, "wing", 4.0F, 4.0F),
+                this.bt = new EntityComplexPart(this, "wing", 4.0F, 4.0F)};
         this.setHealth(this.getMaxHealth());
         this.setSize(16.0F, 8.0F);
         this.noclip = true;
